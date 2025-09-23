@@ -13,9 +13,11 @@ import {
   Heart,
   ThermometerSun,
   Activity,
-  Clock
+  Clock,
+  VolumeX
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useVoice } from "./VoiceProvider";
 
 export const AIConsultation = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -29,7 +31,7 @@ export const AIConsultation = () => {
     }
   ]);
   const [inputMessage, setInputMessage] = useState("");
-  const [currentLanguage, setCurrentLanguage] = useState("English");
+  const [isListening, setIsListening] = useState(false);
   const [patientInfo, setPatientInfo] = useState({
     symptoms: [],
     severity: null,
@@ -37,6 +39,8 @@ export const AIConsultation = () => {
   });
   
   const { toast } = useToast();
+  const { speakText, isPlaying, stopSpeech, currentLanguage, setCurrentLanguage } = useVoice();
+  const recognition = useRef<SpeechRecognition | null>(null);
 
   const languages = [
     { code: "en", name: "English" },
@@ -60,21 +64,20 @@ export const AIConsultation = () => {
   ];
 
   const handleVoiceInput = () => {
-    if (!isRecording) {
-      setIsRecording(true);
+    if (!isListening && recognition.current) {
+      setIsListening(true);
+      recognition.current.lang = currentLanguage === "English" ? "en-US" : 
+                                currentLanguage === "हिंदी (Hindi)" ? "hi-IN" :
+                                currentLanguage === "বাংলা (Bengali)" ? "bn-BD" : "en-US";
+      recognition.current.start();
+      
       toast({
         title: "Listening...",
         description: "Speak clearly about your symptoms",
       });
-      
-      // Simulate voice recognition
-      setTimeout(() => {
-        setIsRecording(false);
-        const simulatedInput = "I have been having fever and headache for 2 days";
-        handleAIResponse(simulatedInput);
-      }, 3000);
-    } else {
-      setIsRecording(false);
+    } else if (isListening && recognition.current) {
+      recognition.current.stop();
+      setIsListening(false);
     }
   };
 
@@ -280,8 +283,13 @@ export const AIConsultation = () => {
                           {message.timestamp.toLocaleTimeString()}
                         </span>
                         {message.type === "ai" && (
-                          <Button variant="ghost" size="sm">
-                            <Volume2 className="h-4 w-4" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => speakText(message.content)}
+                            disabled={isPlaying}
+                          >
+                            {isPlaying ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                           </Button>
                         )}
                       </div>
@@ -304,13 +312,16 @@ export const AIConsultation = () => {
                   </Button>
                   <Button
                     onClick={handleVoiceInput}
-                    className={isRecording ? "bg-emergency animate-pulse" : ""}
+                    disabled={!recognition.current}
+                    className={isListening ? "bg-emergency animate-pulse" : ""}
                   >
-                    {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2 text-center">
-                  {isRecording ? "Listening... Speak now" : "Click microphone to speak or type your message"}
+                  {isListening ? "Listening... Speak now" : 
+                   !recognition.current ? "Voice recognition not supported" :
+                   "Click microphone to speak or type your message"}
                 </p>
               </div>
             </Card>

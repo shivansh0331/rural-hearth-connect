@@ -21,6 +21,8 @@ import { EmergencyResponse } from "@/components/EmergencyResponse";
 import { AIConsultation } from "@/components/AIConsultation";
 import { HealthWorkerDashboard } from "@/components/HealthWorkerDashboard";
 import { DoctorNetwork } from "@/components/DoctorNetwork";
+import { IVRSimulator } from "@/components/IVRSimulator";
+import { USSDMenu } from "@/components/USSDMenu";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -35,6 +37,10 @@ const Index = () => {
         return <HealthWorkerDashboard />;
       case "doctors":
         return <DoctorNetwork />;
+      case "ivr":
+        return <IVRSimulator />;
+      case "ussd":
+        return <USSDMenu />;
       default:
         return <HomePage />;
     }
@@ -78,15 +84,15 @@ const Index = () => {
               <AlertTriangle className="mr-2 h-5 w-5" />
               Emergency Response
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="text-lg px-8 py-3 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-              onClick={() => setActiveSection("consultation")}
-            >
-              <MessageCircle className="mr-2 h-5 w-5" />
-              AI Voice Consultation
-            </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-3 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                onClick={() => setActiveSection("ivr")}
+              >
+                <Phone className="mr-2 h-5 w-5" />
+                IVR System (*108)
+              </Button>
           </div>
           
           <div className="flex justify-center items-center gap-8 text-sm opacity-90">
@@ -219,9 +225,9 @@ const Index = () => {
                 <Button 
                   className="w-full" 
                   variant="secondary"
-                  onClick={() => setActiveSection("health-workers")}
+                  onClick={() => setActiveSection("ussd")}
                 >
-                  Access USSD Portal
+                  Access USSD (*108#)
                 </Button>
               </CardContent>
             </Card>
@@ -293,6 +299,18 @@ const Index = () => {
                 onClick={() => setActiveSection("emergency")}
               >
                 Emergency
+              </Button>
+              <Button 
+                variant={activeSection === "ivr" ? "default" : "ghost"}
+                onClick={() => setActiveSection("ivr")}
+              >
+                IVR System
+              </Button>
+              <Button 
+                variant={activeSection === "ussd" ? "default" : "ghost"}
+                onClick={() => setActiveSection("ussd")}
+              >
+                USSD Menu
               </Button>
               <Button 
                 variant={activeSection === "consultation" ? "default" : "ghost"}
