@@ -14,7 +14,215 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      consultations: {
+        Row: {
+          consultation_type: string | null
+          created_at: string | null
+          diagnosis: string | null
+          id: string
+          language: string | null
+          patient_id: string | null
+          status: string | null
+          symptoms: string
+          treatment: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          consultation_type?: string | null
+          created_at?: string | null
+          diagnosis?: string | null
+          id?: string
+          language?: string | null
+          patient_id?: string | null
+          status?: string | null
+          symptoms: string
+          treatment?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          consultation_type?: string | null
+          created_at?: string | null
+          diagnosis?: string | null
+          id?: string
+          language?: string | null
+          patient_id?: string | null
+          status?: string | null
+          symptoms?: string
+          treatment?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultations_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          available: boolean | null
+          created_at: string | null
+          hospital: string | null
+          id: string
+          name: string
+          phone: string | null
+          specialization: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          created_at?: string | null
+          hospital?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          specialization?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          created_at?: string | null
+          hospital?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          specialization?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      emergency_cases: {
+        Row: {
+          assigned_to: string | null
+          created_at: string | null
+          description: string | null
+          emergency_type: string
+          id: string
+          location: string | null
+          patient_id: string | null
+          priority: string | null
+          resolved_at: string | null
+          status: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string | null
+          emergency_type: string
+          id?: string
+          location?: string | null
+          patient_id?: string | null
+          priority?: string | null
+          resolved_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string | null
+          emergency_type?: string
+          id?: string
+          location?: string | null
+          patient_id?: string | null
+          priority?: string | null
+          resolved_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_cases_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emergency_cases_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      health_workers: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          phone: string | null
+          role: string | null
+          updated_at: string | null
+          user_id: string | null
+          verified: boolean | null
+          village: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          verified?: boolean | null
+          village?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          verified?: boolean | null
+          village?: string | null
+        }
+        Relationships: []
+      }
+      patients: {
+        Row: {
+          age: number | null
+          created_at: string | null
+          gender: string | null
+          id: string
+          name: string
+          phone: string | null
+          updated_at: string | null
+          user_id: string | null
+          village: string | null
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string | null
+          gender?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          village?: string | null
+        }
+        Update: {
+          age?: number | null
+          created_at?: string | null
+          gender?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          village?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
