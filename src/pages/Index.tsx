@@ -54,17 +54,23 @@ const Index = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary-dark/80" />
+        <div className="absolute inset-0 gradient-hero opacity-95" />
         
-        <div className="relative z-10 container mx-auto px-6 text-center text-primary-foreground">
-          <Badge className="mb-6 bg-secondary text-secondary-foreground px-6 py-2 text-lg">
-            SDG 3: Good Health & Well-being
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-6 text-center text-primary-foreground animate-fade-in">
+          <Badge className="mb-6 bg-secondary/90 backdrop-blur-sm text-secondary-foreground px-8 py-3 text-lg rounded-full shadow-2xl hover:scale-105 transition-transform">
+            🎯 SDG 3: Good Health & Well-being
           </Badge>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
             Village Health
             <br />
-            <span className="bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-secondary-light via-accent to-secondary bg-clip-text text-transparent animate-pulse">
               Whisperer
             </span>
           </h1>
@@ -74,25 +80,25 @@ const Index = () => {
             through voice technology, connecting villages to qualified doctors
           </p>
           
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <div className="flex flex-wrap justify-center gap-6 mb-12">
             <Button 
               size="lg" 
-              variant="secondary"
-              className="text-lg px-8 py-3"
+              variant="emergency"
+              className="text-lg px-10 py-4 text-base"
               onClick={() => setActiveSection("emergency")}
             >
-              <AlertTriangle className="mr-2 h-5 w-5" />
+              <AlertTriangle className="mr-2 h-6 w-6" />
               Emergency Response
             </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-lg px-8 py-3 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-                onClick={() => setActiveSection("ivr")}
-              >
-                <Phone className="mr-2 h-5 w-5" />
-                IVR System (*108)
-              </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="text-lg px-10 py-4 text-base border-2 border-white/80 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-primary"
+              onClick={() => setActiveSection("ivr")}
+            >
+              <Phone className="mr-2 h-6 w-6" />
+              IVR System (*108)
+            </Button>
           </div>
           
           <div className="flex justify-center items-center gap-8 text-sm opacity-90">
@@ -113,13 +119,16 @@ const Index = () => {
       </section>
 
       {/* Key Features */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-24 bg-gradient-to-b from-background to-muted/50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
+          <div className="text-center mb-20 animate-fade-in">
+            <Badge className="mb-4 bg-primary/10 text-primary px-6 py-2 text-sm rounded-full">
+              ✨ Our Features
+            </Badge>
+            <h2 className="text-5xl font-extrabold text-foreground mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
               Comprehensive Rural Healthcare Solutions
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Bridging the healthcare gap in rural communities through innovative AI technology
             </p>
           </div>
@@ -163,15 +172,16 @@ const Index = () => {
                 color: "secondary"
               }
             ].map((feature, index) => (
-              <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
-                <CardHeader>
-                  <div className={`inline-flex p-3 rounded-lg bg-${feature.color}/10 text-${feature.color} w-fit mb-4`}>
+              <Card key={index} className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+                <CardHeader className="relative">
+                  <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br from-${feature.color} to-${feature.color}/80 text-${feature.color}-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-base leading-relaxed">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -182,27 +192,36 @@ const Index = () => {
       </section>
 
       {/* Multi-Channel Access */}
-      <section className="py-20 bg-primary/5">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
+      <section className="py-24 bg-gradient-to-b from-muted/50 to-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary)/0.1),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,hsl(var(--secondary)/0.1),transparent_50%)]"></div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-20 animate-fade-in">
+            <Badge className="mb-4 bg-secondary/10 text-secondary px-6 py-2 text-sm rounded-full">
+              📱 Access Methods
+            </Badge>
+            <h2 className="text-5xl font-extrabold text-foreground mb-6 bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent">
               Multiple Ways to Access Care
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Designed for all technology levels - from basic phones to smartphones
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center border-2 border-primary/20">
-              <CardHeader>
-                <Phone className="h-12 w-12 mx-auto text-primary mb-4" />
-                <CardTitle>IVR Voice Calls</CardTitle>
-                <CardDescription>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <Card className="text-center border-2 border-primary/30 hover:border-primary hover:shadow-2xl transition-all duration-300 group gradient-card overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-6 rounded-full bg-gradient-to-br from-primary to-primary-dark mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform">
+                  <Phone className="h-12 w-12 text-primary-foreground" />
+                </div>
+                <CardTitle className="text-2xl font-bold mb-3">IVR Voice Calls</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
                   Simple dial-in number for voice consultation in local languages
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <Button 
                   className="w-full" 
                   variant="outline"
@@ -213,15 +232,18 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center border-2 border-secondary/20">
-              <CardHeader>
-                <Activity className="h-12 w-12 mx-auto text-secondary mb-4" />
-                <CardTitle>USSD Menu System</CardTitle>
-                <CardDescription>
+            <Card className="text-center border-2 border-secondary/30 hover:border-secondary hover:shadow-2xl transition-all duration-300 group gradient-card overflow-hidden relative md:scale-105">
+              <div className="absolute top-0 right-0 bg-gradient-to-bl from-secondary/20 to-transparent w-full h-full"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-6 rounded-full bg-gradient-to-br from-secondary to-secondary-light mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform">
+                  <Activity className="h-12 w-12 text-secondary-foreground" />
+                </div>
+                <CardTitle className="text-2xl font-bold mb-3">USSD Menu System</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
                   Step-by-step menu navigation for keypad phones without internet
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <Button 
                   className="w-full" 
                   variant="secondary"
@@ -232,17 +254,21 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center border-2 border-success/20">
-              <CardHeader>
-                <MapPin className="h-12 w-12 mx-auto text-success mb-4" />
-                <CardTitle>Mobile App & Web</CardTitle>
-                <CardDescription>
+            <Card className="text-center border-2 border-success/30 hover:border-success hover:shadow-2xl transition-all duration-300 group gradient-card overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-success/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-6 rounded-full bg-gradient-to-br from-success to-success/80 mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform">
+                  <MapPin className="h-12 w-12 text-success-foreground" />
+                </div>
+                <CardTitle className="text-2xl font-bold mb-3">Mobile App & Web</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
                   Full-featured app with maps, video calls, and health records
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <Button 
-                  className="w-full bg-success hover:bg-success/90 text-success-foreground"
+                  className="w-full"
+                  variant="success"
                   onClick={() => setActiveSection("doctors")}
                 >
                   Open Web Platform
@@ -254,20 +280,26 @@ const Index = () => {
       </section>
 
       {/* Impact Statistics */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary-dark text-primary-foreground">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-12">Making Real Impact</h2>
+      <section className="py-24 gradient-hero text-primary-foreground relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9Ii4xIi8+PC9nPjwvc3ZnPg==')] opacity-10"></div>
+        
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <Badge className="mb-6 bg-white/20 backdrop-blur-sm text-white px-8 py-3 text-lg rounded-full shadow-xl">
+            📊 Our Impact
+          </Badge>
+          <h2 className="text-5xl font-extrabold mb-16 animate-fade-in">Making Real Impact</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
-              { number: "24/7", label: "Emergency Response" },
-              { number: "15%", label: "Reduction in Maternal Deaths" },
-              { number: "100+", label: "Villages Connected" },
-              { number: "50+", label: "Languages Supported" }
+              { number: "24/7", label: "Emergency Response", icon: "⚡" },
+              { number: "15%", label: "Reduction in Maternal Deaths", icon: "💚" },
+              { number: "100+", label: "Villages Connected", icon: "🏘️" },
+              { number: "50+", label: "Languages Supported", icon: "🗣️" }
             ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold mb-2">{stat.number}</div>
-                <div className="text-lg opacity-90">{stat.label}</div>
+              <div key={index} className="text-center group">
+                <div className="text-5xl mb-3 animate-float" style={{ animationDelay: `${index * 0.2}s` }}>{stat.icon}</div>
+                <div className="text-5xl md:text-6xl font-extrabold mb-3 group-hover:scale-110 transition-transform">{stat.number}</div>
+                <div className="text-lg opacity-95 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -279,12 +311,14 @@ const Index = () => {
   return (
     <div>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-primary/20 shadow-lg">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Heart className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-foreground">Village Health Whisperer</span>
+            <div className="flex items-center gap-3 group cursor-pointer">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-secondary shadow-lg group-hover:scale-110 transition-transform">
+                <Heart className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-2xl font-extrabold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Village Health Whisperer</span>
             </div>
             
             <div className="hidden md:flex items-center gap-6">

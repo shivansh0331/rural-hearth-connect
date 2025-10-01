@@ -9,68 +9,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Healthcare Color Palette */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 27%;
+    /* Modern Colorful Medical Design */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Medical Trust Blue */
-    --primary: 210 100% 56%;
+    /* Vibrant Medical Blue */
+    --primary: 200 95% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 210 100% 85%;
-    --primary-dark: 210 100% 40%;
+    --primary-light: 200 95% 65%;
+    --primary-dark: 200 95% 30%;
 
-    /* Healing Green */
-    --secondary: 142 69% 58%;
+    /* Vibrant Purple */
+    --secondary: 280 65% 60%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 142 69% 85%;
+    --secondary-light: 280 65% 75%;
 
-    /* Soft Backgrounds */
-    --muted: 210 20% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Warm Accent */
+    --accent: 340 80% 55%;
+    --accent-foreground: 0 0% 100%;
 
-    --accent: 45 100% 92%;
-    --accent-foreground: 215 25% 27%;
+    /* Success Green */
+    --success: 142 70% 45%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 142 70% 90%;
 
-    /* Emergency Red */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --emergency: 0 100% 50%;
-    --emergency-light: 0 100% 95%;
-
-    /* Healthcare Success */
-    --success: 142 76% 36%;
-    --success-light: 142 76% 90%;
-
-    /* Warning */
+    /* Warning Orange */
     --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
     --warning-light: 38 100% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 210 100% 56%;
+    /* Emergency Red */
+    --emergency: 0 85% 60%;
+    --emergency-foreground: 0 0% 100%;
+    --emergency-light: 0 100% 95%;
 
-    /* Healthcare Gradients */
-    --gradient-medical: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
-    --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(0 100% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(var(--secondary)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%);
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Shadows for Healthcare UI */
-    --shadow-card: 0 4px 12px hsl(var(--primary) / 0.08);
-    --shadow-emergency: 0 8px 25px hsl(var(--emergency) / 0.15);
-    --shadow-success: 0 4px 12px hsl(var(--success) / 0.12);
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Animations and Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fast: all 0.2s ease-in-out;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 200 95% 45%;
 
-    --radius: 0.5rem;
+    /* Modern Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(200 95% 45%) 0%, hsl(280 65% 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(200 95% 35%) 0%, hsl(280 65% 50%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -90,33 +84,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 47% 11%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222 40% 15%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 40% 15%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 200 95% 55%;
+    --primary-foreground: 222 47% 11%;
+    --primary-light: 200 95% 70%;
+    --primary-dark: 200 95% 40%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 280 65% 65%;
+    --secondary-foreground: 222 47% 11%;
+    --secondary-light: 280 65% 80%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 340 80% 60%;
+    --accent-foreground: 222 47% 11%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --success: 142 70% 50%;
+    --success-foreground: 222 47% 11%;
+    --success-light: 142 70% 90%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 222 47% 11%;
+    --warning-light: 38 100% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --emergency: 0 85% 65%;
+    --emergency-foreground: 222 47% 11%;
+
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 222 47% 11%;
+
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 200 95% 55%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(200 95% 45%) 0%, hsl(280 65% 55%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(200 95% 35%) 0%, hsl(280 65% 45%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(222 40% 15%) 0%, hsl(222 40% 18%) 100%);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -135,5 +147,32 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }
