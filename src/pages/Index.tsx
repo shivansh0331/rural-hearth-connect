@@ -400,6 +400,12 @@ const Index = () => {
               >
                 Doctor Network
               </Button>
+              <Button 
+                variant="default"
+                onClick={() => window.location.href = "/auth"}
+              >
+                Login / Sign Up
+              </Button>
             </div>
           </div>
         </div>
