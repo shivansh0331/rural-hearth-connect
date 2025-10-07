@@ -134,59 +134,95 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <AlertTriangle className="h-8 w-8" />,
-                title: "Emergency First Response",
-                description: "Immediate AI-guided first aid with automatic ambulance and hospital alerts",
-                color: "emergency"
-              },
-              {
-                icon: <MessageCircle className="h-8 w-8" />,
-                title: "AI Voice Doctor",
-                description: "Multi-dialect voice consultation with symptom triage and treatment recommendations",
-                color: "primary"
-              },
-              {
-                icon: <Users className="h-8 w-8" />,
-                title: "Health Worker Network",
-                description: "Empowering ASHA/ANM workers with digital tools and training modules",
-                color: "secondary"
-              },
-              {
-                icon: <Stethoscope className="h-8 w-8" />,
-                title: "Doctor Integration",
-                description: "Verified doctor network with specialty matching and availability tracking",
-                color: "primary"
-              },
-              {
-                icon: <Heart className="h-8 w-8" />,
-                title: "Preventive Care",
-                description: "Community health alerts, vaccination reminders, and outbreak detection",
-                color: "success"
-              },
-              {
-                icon: <Shield className="h-8 w-8" />,
-                title: "Offline-First Design",
-                description: "Works without internet, syncs when connection is available",
-                color: "secondary"
-              }
-            ].map((feature, index) => (
-              <Card key={index} className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
-                <CardHeader className="relative">
-                  <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br from-${feature.color} to-${feature.color}/80 text-${feature.color}-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
-                    {feature.icon}
-                  </div>
-                  <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
+            <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-emergency to-emergency/80 text-emergency-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <AlertTriangle className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">Emergency First Response</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
+                  Immediate AI-guided first aid with automatic ambulance and hospital alerts
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <MessageCircle className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">AI Voice Doctor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
+                  Multi-dialect voice consultation with symptom triage and treatment recommendations
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Users className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">Health Worker Network</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
+                  Empowering ASHA/ANM workers with digital tools and training modules
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Stethoscope className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">Doctor Integration</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
+                  Verified doctor network with specialty matching and availability tracking
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-success to-success/80 text-success-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Heart className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">Preventive Care</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
+                  Community health alerts, vaccination reminders, and outbreak detection
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 border-primary/20 hover:border-primary/50 gradient-card overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-bl-full -mr-16 -mt-16"></div>
+              <CardHeader className="relative">
+                <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Shield className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">Offline-First Design</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
+                  Works without internet, syncs when connection is available
+                </CardDescription>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
