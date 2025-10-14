@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
   Phone, 
   Heart, 
@@ -14,7 +15,8 @@ import {
   AlertTriangle,
   Activity,
   Clock,
-  Globe
+  Globe,
+  Menu
 } from "lucide-react";
 import heroImage from "@/assets/rural-telemedicine-hero.jpg";
 import { EmergencyResponse } from "@/components/EmergencyResponse";
@@ -357,6 +359,7 @@ const Index = () => {
               <span className="text-2xl font-extrabold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Village Health Whisperer</span>
             </div>
             
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
               <Button 
                 variant={activeSection === "home" ? "default" : "ghost"}
@@ -406,6 +409,77 @@ const Index = () => {
               >
                 Login / Sign Up
               </Button>
+            </div>
+
+            {/* Mobile Navigation */}
+            <div className="flex md:hidden items-center gap-3">
+              <Button 
+                variant="default"
+                size="sm"
+                onClick={() => window.location.href = "/auth"}
+              >
+                Login
+              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <div className="flex flex-col gap-4 mt-8">
+                    <Button 
+                      variant={activeSection === "home" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("home")}
+                    >
+                      Home
+                    </Button>
+                    <Button 
+                      variant={activeSection === "emergency" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("emergency")}
+                    >
+                      Emergency
+                    </Button>
+                    <Button 
+                      variant={activeSection === "ivr" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("ivr")}
+                    >
+                      IVR System
+                    </Button>
+                    <Button 
+                      variant={activeSection === "ussd" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("ussd")}
+                    >
+                      USSD Menu
+                    </Button>
+                    <Button 
+                      variant={activeSection === "consultation" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("consultation")}
+                    >
+                      AI Consultation
+                    </Button>
+                    <Button 
+                      variant={activeSection === "health-workers" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("health-workers")}
+                    >
+                      Health Workers
+                    </Button>
+                    <Button 
+                      variant={activeSection === "doctors" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("doctors")}
+                    >
+                      Doctor Network
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
