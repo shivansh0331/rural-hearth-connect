@@ -41,7 +41,7 @@ const DoctorAuth = () => {
           title: "Account created!",
           description: "Welcome to Village Health Whisperer",
         });
-        navigate("/");
+        navigate("/dashboard/doctor");
       } else {
         const { error } = await signIn(email, password);
         
@@ -51,7 +51,7 @@ const DoctorAuth = () => {
           title: "Welcome back!",
           description: "You've successfully logged in",
         });
-        navigate("/");
+        navigate("/dashboard/doctor");
       }
     } catch (error: any) {
       toast({

@@ -13,6 +13,11 @@ import DoctorAuth from "./pages/auth/DoctorAuth";
 import HospitalAuth from "./pages/auth/HospitalAuth";
 import AshaWorkerAuth from "./pages/auth/AshaWorkerAuth";
 import RelativeAuth from "./pages/auth/RelativeAuth";
+import PatientDashboard from "./pages/dashboards/PatientDashboard";
+import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
+import HospitalDashboard from "./pages/dashboards/HospitalDashboard";
+import AshaWorkerDashboard from "./pages/dashboards/AshaWorkerDashboard";
+import RelativeDashboard from "./pages/dashboards/RelativeDashboard";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +37,11 @@ const App = () => (
               <Route path="/auth/hospital" element={<HospitalAuth />} />
               <Route path="/auth/asha-worker" element={<AshaWorkerAuth />} />
               <Route path="/auth/relative" element={<RelativeAuth />} />
+              <Route path="/dashboard/patient" element={<PatientDashboard />} />
+              <Route path="/dashboard/doctor" element={<DoctorDashboard />} />
+              <Route path="/dashboard/hospital" element={<HospitalDashboard />} />
+              <Route path="/dashboard/asha-worker" element={<AshaWorkerDashboard />} />
+              <Route path="/dashboard/relative" element={<RelativeDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -39,7 +39,7 @@ const RelativeAuth = () => {
           title: "Account created!",
           description: "Welcome to Village Health Whisperer",
         });
-        navigate("/");
+        navigate("/dashboard/relative");
       } else {
         const { error } = await signIn(email, password);
         
@@ -49,7 +49,7 @@ const RelativeAuth = () => {
           title: "Welcome back!",
           description: "You've successfully logged in",
         });
-        navigate("/");
+        navigate("/dashboard/relative");
       }
     } catch (error: any) {
       toast({

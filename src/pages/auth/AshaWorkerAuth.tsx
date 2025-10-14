@@ -39,7 +39,7 @@ const AshaWorkerAuth = () => {
           title: "Account created!",
           description: "Welcome to Village Health Whisperer",
         });
-        navigate("/");
+        navigate("/dashboard/asha-worker");
       } else {
         const { error } = await signIn(email, password);
         
@@ -49,7 +49,7 @@ const AshaWorkerAuth = () => {
           title: "Welcome back!",
           description: "You've successfully logged in",
         });
-        navigate("/");
+        navigate("/dashboard/asha-worker");
       }
     } catch (error: any) {
       toast({
