@@ -239,6 +239,7 @@ export type Database = {
           gender: string | null
           id: string
           name: string
+          patient_id: string | null
           phone: string | null
           updated_at: string | null
           user_id: string | null
@@ -250,6 +251,7 @@ export type Database = {
           gender?: string | null
           id?: string
           name: string
+          patient_id?: string | null
           phone?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -261,6 +263,7 @@ export type Database = {
           gender?: string | null
           id?: string
           name?: string
+          patient_id?: string | null
           phone?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -335,6 +338,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_patient_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
