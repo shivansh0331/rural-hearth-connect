@@ -40,7 +40,7 @@ const DoctorDashboard = () => {
         .from("doctors")
         .select("*")
         .eq("user_id", user?.id)
-        .single();
+        .maybeSingle();
 
       setDoctorData(doctor);
       setAvailable(doctor?.available || false);

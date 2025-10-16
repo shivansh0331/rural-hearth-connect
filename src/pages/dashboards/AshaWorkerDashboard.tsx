@@ -39,7 +39,7 @@ const AshaWorkerDashboard = () => {
         .from("health_workers")
         .select("*")
         .eq("user_id", user?.id)
-        .single();
+        .maybeSingle();
 
       setWorkerData(worker);
 

@@ -405,9 +405,9 @@ const Index = () => {
               </Button>
               <Button 
                 variant="default"
-                onClick={() => window.location.href = "/auth"}
+                asChild
               >
-                Login / Sign Up
+                <a href="/auth">Login / Sign Up</a>
               </Button>
             </div>
 
@@ -416,9 +416,9 @@ const Index = () => {
               <Button 
                 variant="default"
                 size="sm"
-                onClick={() => window.location.href = "/auth"}
+                asChild
               >
-                Login
+                <a href="/auth">Login</a>
               </Button>
               <Sheet>
                 <SheetTrigger asChild>

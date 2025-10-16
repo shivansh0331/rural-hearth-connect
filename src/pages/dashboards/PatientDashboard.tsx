@@ -39,7 +39,7 @@ const PatientDashboard = () => {
         .from("patients")
         .select("*")
         .eq("user_id", user?.id)
-        .single();
+        .maybeSingle();
 
       setPatientData(patient);
 
@@ -147,6 +147,13 @@ const PatientDashboard = () => {
               <CardTitle>Your Profile</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
+              <div>
+                <p className="text-sm text-muted-foreground">Patient ID</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-mono text-sm font-bold text-primary">{patientData?.patient_id}</p>
+                  <Badge variant="secondary" className="text-xs">Share with relatives</Badge>
+                </div>
+              </div>
               <div>
                 <p className="text-sm text-muted-foreground">Name</p>
                 <p className="font-medium">{patientData?.name}</p>

@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   UserCircle, 
@@ -25,6 +28,9 @@ const RelativeDashboard = () => {
   const [patientData, setPatientData] = useState<any>(null);
   const [consultations, setConsultations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [patientIdInput, setPatientIdInput] = useState("");
+  const [linkingPatient, setLinkingPatient] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -40,7 +46,7 @@ const RelativeDashboard = () => {
         .from("relatives")
         .select("*")
         .eq("user_id", user?.id)
-        .single();
+        .maybeSingle();
 
       setRelativeData(relative);
 
@@ -49,7 +55,7 @@ const RelativeDashboard = () => {
           .from("patients")
           .select("*")
           .eq("id", relative.patient_id)
-          .single();
+          .maybeSingle();
 
         setPatientData(patient);
 
@@ -68,6 +74,63 @@ const RelativeDashboard = () => {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLinkPatient = async () => {
+    if (!patientIdInput.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a patient ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLinkingPatient(true);
+    try {
+      // Find patient by patient_id
+      const { data: patient, error: patientError } = await supabase
+        .from("patients")
+        .select("id")
+        .eq("patient_id", patientIdInput.trim())
+        .maybeSingle();
+
+      if (patientError) throw patientError;
+
+      if (!patient) {
+        toast({
+          title: "Patient not found",
+          description: "No patient found with this ID. Please check and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update relative with patient_id
+      const { error: updateError } = await supabase
+        .from("relatives")
+        .update({ patient_id: patient.id })
+        .eq("user_id", user?.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Success!",
+        description: "Patient linked successfully",
+      });
+
+      setLinkDialogOpen(false);
+      setPatientIdInput("");
+      fetchRelativeData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLinkingPatient(false);
     }
   };
 
@@ -203,7 +266,7 @@ const RelativeDashboard = () => {
               ) : (
                 <div className="text-center py-4 text-muted-foreground">
                   <p className="text-sm">No patient linked yet</p>
-                  <Button variant="link" className="mt-2">
+                  <Button variant="link" className="mt-2" onClick={() => setLinkDialogOpen(true)}>
                     Link Patient Profile
                   </Button>
                 </div>
@@ -327,6 +390,40 @@ const RelativeDashboard = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Link Patient Dialog */}
+      <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Link Patient Profile</DialogTitle>
+            <DialogDescription>
+              Enter the unique Patient ID to link their profile to your account. You can get this ID from the patient.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="patientId">Patient ID</Label>
+              <Input
+                id="patientId"
+                placeholder="PAT-YYYYMMDD-XXXX"
+                value={patientIdInput}
+                onChange={(e) => setPatientIdInput(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Example format: PAT-20250116-1234
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setLinkDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleLinkPatient} disabled={linkingPatient}>
+              {linkingPatient ? "Linking..." : "Link Patient"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

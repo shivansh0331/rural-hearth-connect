@@ -41,7 +41,7 @@ const HospitalDashboard = () => {
         .from("hospitals")
         .select("*")
         .eq("user_id", user?.id)
-        .single();
+        .maybeSingle();
 
       setHospitalData(hospital);
       setBedsAvailable(hospital?.beds_available?.toString() || "0");
