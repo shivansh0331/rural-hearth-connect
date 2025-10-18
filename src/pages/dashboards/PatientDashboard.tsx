@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Heart, 
@@ -16,6 +17,9 @@ import {
   Stethoscope
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { EmergencyResponse } from "@/components/EmergencyResponse";
+import { AIConsultation } from "@/components/AIConsultation";
+import { IVRSimulator } from "@/components/IVRSimulator";
 
 const PatientDashboard = () => {
   const { user, signOut } = useAuth();
@@ -24,6 +28,9 @@ const PatientDashboard = () => {
   const [patientData, setPatientData] = useState<any>(null);
   const [consultations, setConsultations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showEmergency, setShowEmergency] = useState(false);
+  const [showConsultation, setShowConsultation] = useState(false);
+  const [showIVR, setShowIVR] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -97,7 +104,7 @@ const PatientDashboard = () => {
       <main className="container mx-auto px-6 py-8">
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/")}>
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowEmergency(true)}>
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-lg bg-emergency/10">
@@ -111,7 +118,7 @@ const PatientDashboard = () => {
             </CardHeader>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/")}>
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowConsultation(true)}>
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-lg bg-primary/10">
@@ -125,7 +132,7 @@ const PatientDashboard = () => {
             </CardHeader>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/")}>
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowIVR(true)}>
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-lg bg-secondary/10">
@@ -265,6 +272,27 @@ const PatientDashboard = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Emergency Dialog */}
+      <Dialog open={showEmergency} onOpenChange={setShowEmergency}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-auto p-0">
+          <EmergencyResponse />
+        </DialogContent>
+      </Dialog>
+
+      {/* Consultation Dialog */}
+      <Dialog open={showConsultation} onOpenChange={setShowConsultation}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-auto p-0">
+          <AIConsultation />
+        </DialogContent>
+      </Dialog>
+
+      {/* IVR Dialog */}
+      <Dialog open={showIVR} onOpenChange={setShowIVR}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-auto p-0">
+          <IVRSimulator />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
