@@ -66,7 +66,35 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "consultations_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "public_doctors"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "consultations_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_consultations_doctor"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_consultations_doctor"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "public_doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_consultations_patient"
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
@@ -84,7 +112,7 @@ export type Database = {
           phone: string | null
           specialization: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           available?: boolean | null
@@ -95,7 +123,7 @@ export type Database = {
           phone?: string | null
           specialization?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           available?: boolean | null
@@ -106,7 +134,7 @@ export type Database = {
           phone?: string | null
           specialization?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -156,6 +184,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "emergency_cases_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "public_doctors"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "emergency_cases_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
@@ -172,7 +207,7 @@ export type Database = {
           phone: string | null
           role: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           verified: boolean | null
           village: string | null
         }
@@ -183,7 +218,7 @@ export type Database = {
           phone?: string | null
           role?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           verified?: boolean | null
           village?: string | null
         }
@@ -194,7 +229,7 @@ export type Database = {
           phone?: string | null
           role?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           verified?: boolean | null
           village?: string | null
         }
@@ -212,7 +247,7 @@ export type Database = {
           phone: string | null
           specialty: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           verified: boolean | null
         }
         Insert: {
@@ -226,7 +261,7 @@ export type Database = {
           phone?: string | null
           specialty?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           verified?: boolean | null
         }
         Update: {
@@ -240,7 +275,7 @@ export type Database = {
           phone?: string | null
           specialty?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           verified?: boolean | null
         }
         Relationships: []
@@ -255,7 +290,7 @@ export type Database = {
           patient_id: string | null
           phone: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           village: string | null
         }
         Insert: {
@@ -267,7 +302,7 @@ export type Database = {
           patient_id?: string | null
           phone?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           village?: string | null
         }
         Update: {
@@ -279,10 +314,55 @@ export type Database = {
           patient_id?: string | null
           phone?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           village?: string | null
         }
         Relationships: []
+      }
+      relative_link_requests: {
+        Row: {
+          created_at: string
+          id: string
+          patient_id: string
+          relative_id: string
+          requested_at: string
+          responded_at: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          patient_id: string
+          relative_id: string
+          requested_at?: string
+          responded_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          patient_id?: string
+          relative_id?: string
+          requested_at?: string
+          responded_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relative_link_requests_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relative_link_requests_relative_id_fkey"
+            columns: ["relative_id"]
+            isOneToOne: false
+            referencedRelation: "relatives"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       relatives: {
         Row: {
@@ -293,7 +373,7 @@ export type Database = {
           phone: string | null
           relation_to_patient: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string | null
@@ -303,7 +383,7 @@ export type Database = {
           phone?: string | null
           relation_to_patient?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string | null
@@ -313,7 +393,7 @@ export type Database = {
           phone?: string | null
           relation_to_patient?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -348,9 +428,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_doctors: {
+        Row: {
+          available: boolean | null
+          created_at: string | null
+          hospital: string | null
+          id: string | null
+          name: string | null
+          specialization: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          created_at?: string | null
+          hospital?: string | null
+          id?: string | null
+          name?: string | null
+          specialization?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          created_at?: string | null
+          hospital?: string | null
+          id?: string | null
+          name?: string | null
+          specialization?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      approve_relative_link: {
+        Args: { request_id: string }
+        Returns: undefined
+      }
       generate_patient_id: {
         Args: Record<PropertyKey, never>
         Returns: string

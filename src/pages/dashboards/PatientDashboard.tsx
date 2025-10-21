@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EmergencyResponse } from "@/components/EmergencyResponse";
 import { ConsultationForm } from "@/components/ConsultationForm";
 import { IVRSimulator } from "@/components/IVRSimulator";
+import { PatientApprovalRequests } from "@/components/PatientApprovalRequests";
 
 const PatientDashboard = () => {
   const { user, signOut } = useAuth();
@@ -146,6 +147,9 @@ const PatientDashboard = () => {
             </CardHeader>
           </Card>
         </div>
+
+        {/* Patient Approval Requests */}
+        <PatientApprovalRequests />
 
         {/* Patient Info */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

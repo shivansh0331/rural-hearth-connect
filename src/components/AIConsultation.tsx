@@ -66,9 +66,16 @@ export const AIConsultation = () => {
   const handleVoiceInput = () => {
     if (!isListening && recognition.current) {
       setIsListening(true);
-      recognition.current.lang = currentLanguage === "English" ? "en-US" : 
-                                currentLanguage === "हिंदी (Hindi)" ? "hi-IN" :
-                                currentLanguage === "বাংলা (Bengali)" ? "bn-BD" : "en-US";
+      const langMap: Record<string, string> = {
+        "English": "en-US",
+        "हिंदी (Hindi)": "hi-IN",
+        "বাংলা (Bengali)": "bn-BD",
+        "తెలుగు (Telugu)": "te-IN",
+        "தமிழ் (Tamil)": "ta-IN",
+        "मराठी (Marathi)": "mr-IN",
+        "ગુજરાતી (Gujarati)": "gu-IN"
+      };
+      recognition.current.lang = langMap[currentLanguage] || "en-US";
       recognition.current.start();
       
       toast({

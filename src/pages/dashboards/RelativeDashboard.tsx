@@ -31,6 +31,7 @@ const RelativeDashboard = () => {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [patientIdInput, setPatientIdInput] = useState("");
   const [linkingPatient, setLinkingPatient] = useState(false);
+  const [linkRequests, setLinkRequests] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -49,6 +50,17 @@ const RelativeDashboard = () => {
         .maybeSingle();
 
       setRelativeData(relative);
+
+      // Fetch link requests
+      if (relative) {
+        const { data: requests } = await supabase
+          .from("relative_link_requests")
+          .select("*, patients(name, patient_id)")
+          .eq("relative_id", relative.id)
+          .order("requested_at", { ascending: false });
+        
+        setLinkRequests(requests || []);
+      }
 
       if (relative?.patient_id) {
         const { data: patient } = await supabase
@@ -89,14 +101,22 @@ const RelativeDashboard = () => {
 
     setLinkingPatient(true);
     try {
-      // Find patient by patient_id
+      // Find patient by patient_id (medical staff can search)
       const { data: patient, error: patientError } = await supabase
         .from("patients")
-        .select("id")
+        .select("id, name")
         .eq("patient_id", patientIdInput.trim())
         .maybeSingle();
 
-      if (patientError) throw patientError;
+      if (patientError) {
+        // Patient not found or no permission
+        toast({
+          title: "Patient not found",
+          description: "No patient found with this ID. Please verify the ID and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       if (!patient) {
         toast({
@@ -107,17 +127,31 @@ const RelativeDashboard = () => {
         return;
       }
 
-      // Update relative with patient_id
-      const { error: updateError } = await supabase
-        .from("relatives")
-        .update({ patient_id: patient.id })
-        .eq("user_id", user?.id);
+      // Create link request instead of direct linking
+      const { error: requestError } = await supabase
+        .from("relative_link_requests")
+        .insert({
+          relative_id: relativeData.id,
+          patient_id: patient.id,
+          status: "pending"
+        });
 
-      if (updateError) throw updateError;
+      if (requestError) {
+        if (requestError.code === "23505") {
+          toast({
+            title: "Request already exists",
+            description: "You have already sent a request to this patient.",
+            variant: "destructive",
+          });
+        } else {
+          throw requestError;
+        }
+        return;
+      }
 
       toast({
-        title: "Success!",
-        description: "Patient linked successfully",
+        title: "Request Sent!",
+        description: `A link request has been sent to ${patient.name}. You will be notified once they approve.`,
       });
 
       setLinkDialogOpen(false);
@@ -301,6 +335,37 @@ const RelativeDashboard = () => {
           </Card>
         </div>
 
+        {/* Link Requests */}
+        {linkRequests.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Link Requests</CardTitle>
+              <CardDescription>Your patient linking requests</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {linkRequests.map((request: any) => (
+                  <div key={request.id} className="p-4 border rounded-lg flex justify-between items-center">
+                    <div>
+                      <p className="font-medium">{request.patients?.name}</p>
+                      <p className="text-sm text-muted-foreground">ID: {request.patients?.patient_id}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Requested: {new Date(request.requested_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Badge variant={
+                      request.status === "approved" ? "default" : 
+                      request.status === "rejected" ? "destructive" : "secondary"
+                    }>
+                      {request.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Medical History */}
         <Card>
           <CardHeader>
@@ -395,9 +460,9 @@ const RelativeDashboard = () => {
       <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Link Patient Profile</DialogTitle>
+            <DialogTitle>Request Patient Link</DialogTitle>
             <DialogDescription>
-              Enter the unique Patient ID to link their profile to your account. You can get this ID from the patient.
+              Enter the unique Patient ID to send a link request. The patient must approve this request before you can access their information.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -419,7 +484,7 @@ const RelativeDashboard = () => {
               Cancel
             </Button>
             <Button onClick={handleLinkPatient} disabled={linkingPatient}>
-              {linkingPatient ? "Linking..." : "Link Patient"}
+              {linkingPatient ? "Sending Request..." : "Send Request"}
             </Button>
           </DialogFooter>
         </DialogContent>
