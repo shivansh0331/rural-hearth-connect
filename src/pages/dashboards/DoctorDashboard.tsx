@@ -23,6 +23,7 @@ const DoctorDashboard = () => {
   const { toast } = useToast();
   const [doctorData, setDoctorData] = useState<any>(null);
   const [emergencyCases, setEmergencyCases] = useState<any[]>([]);
+  const [consultations, setConsultations] = useState<any[]>([]);
   const [available, setAvailable] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +45,27 @@ const DoctorDashboard = () => {
 
       setDoctorData(doctor);
       setAvailable(doctor?.available || false);
+
+      if (doctor) {
+        // Fetch consultations assigned to this doctor
+        const { data: consultationsData } = await supabase
+          .from("consultations")
+          .select(`
+            *,
+            patients (
+              name,
+              age,
+              gender,
+              phone,
+              village,
+              patient_id
+            )
+          `)
+          .eq("doctor_id", doctor.id)
+          .order("created_at", { ascending: false });
+
+        setConsultations(consultationsData || []);
+      }
 
       const { data: cases } = await supabase
         .from("emergency_cases")
@@ -159,6 +181,81 @@ const DoctorDashboard = () => {
             </CardHeader>
           </Card>
         </div>
+
+        {/* Consultations Assigned to Doctor */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Your Consultations</CardTitle>
+            <CardDescription>Patients waiting for your consultation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {consultations.length > 0 ? (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {consultations.map((consultation: any) => (
+                  <div
+                    key={consultation.id}
+                    className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <p className="font-semibold text-lg">{consultation.patients?.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Patient ID: {consultation.patients?.patient_id}
+                        </p>
+                      </div>
+                      <Badge variant={consultation.status === "completed" ? "default" : "secondary"}>
+                        {consultation.status}
+                      </Badge>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <strong>Department:</strong> {consultation.department}
+                      </div>
+                      <div>
+                        <strong>Symptoms:</strong>
+                        <p className="text-muted-foreground mt-1">{consultation.symptoms}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t">
+                        <div>
+                          <span className="text-muted-foreground">Age:</span> {consultation.patients?.age}
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Gender:</span> {consultation.patients?.gender}
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Phone:</span> {consultation.patients?.phone}
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Village:</span> {consultation.patients?.village}
+                        </div>
+                      </div>
+                      {consultation.diagnosis && (
+                        <div className="mt-2 pt-2 border-t">
+                          <strong>Diagnosis:</strong>
+                          <p className="text-muted-foreground mt-1">{consultation.diagnosis}</p>
+                        </div>
+                      )}
+                      {consultation.treatment && (
+                        <div>
+                          <strong>Treatment:</strong>
+                          <p className="text-muted-foreground mt-1">{consultation.treatment}</p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      Requested: {new Date(consultation.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <Activity className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>No consultations assigned yet</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Profile and Emergency Cases */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

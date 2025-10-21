@@ -18,7 +18,9 @@ export type Database = {
         Row: {
           consultation_type: string | null
           created_at: string | null
+          department: string | null
           diagnosis: string | null
+          doctor_id: string | null
           id: string
           language: string | null
           patient_id: string | null
@@ -30,7 +32,9 @@ export type Database = {
         Insert: {
           consultation_type?: string | null
           created_at?: string | null
+          department?: string | null
           diagnosis?: string | null
+          doctor_id?: string | null
           id?: string
           language?: string | null
           patient_id?: string | null
@@ -42,7 +46,9 @@ export type Database = {
         Update: {
           consultation_type?: string | null
           created_at?: string | null
+          department?: string | null
           diagnosis?: string | null
+          doctor_id?: string | null
           id?: string
           language?: string | null
           patient_id?: string | null
@@ -52,6 +58,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "consultations_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "consultations_patient_id_fkey"
             columns: ["patient_id"]

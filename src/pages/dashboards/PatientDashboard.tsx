@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EmergencyResponse } from "@/components/EmergencyResponse";
-import { AIConsultation } from "@/components/AIConsultation";
+import { ConsultationForm } from "@/components/ConsultationForm";
 import { IVRSimulator } from "@/components/IVRSimulator";
 
 const PatientDashboard = () => {
@@ -282,8 +282,11 @@ const PatientDashboard = () => {
 
       {/* Consultation Dialog */}
       <Dialog open={showConsultation} onOpenChange={setShowConsultation}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-auto p-0">
-          <AIConsultation />
+        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-auto">
+          <ConsultationForm onSuccess={() => {
+            setShowConsultation(false);
+            fetchPatientData();
+          }} />
         </DialogContent>
       </Dialog>
 
