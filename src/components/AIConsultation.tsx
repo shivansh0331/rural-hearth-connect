@@ -14,10 +14,12 @@ import {
   ThermometerSun,
   Activity,
   Clock,
-  VolumeX
+  VolumeX,
+  Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "./VoiceProvider";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AIConsultation = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -25,13 +27,14 @@ export const AIConsultation = () => {
     {
       id: 1,
       type: "ai",
-      content: "Namaste! I am your AI Voice Doctor. How can I help you today? You can speak in Hindi, English, or your local language.",
+      content: "Namaste! I am your AI Medical Assistant. How can I help you today? You can speak in Hindi, English, or your local language to describe your symptoms.",
       timestamp: new Date(),
       severity: null
     }
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [patientInfo, setPatientInfo] = useState({
     symptoms: [],
     severity: null,
@@ -41,6 +44,7 @@ export const AIConsultation = () => {
   const { toast } = useToast();
   const { speakText, isPlaying, stopSpeech, currentLanguage, setCurrentLanguage } = useVoice();
   const recognition = useRef<SpeechRecognition | null>(null);
+  const conversationHistory = useRef<Array<{role: string, content: string}>>([]);
 
   const languages = [
     { code: "en", name: "English" },
@@ -100,7 +104,7 @@ export const AIConsultation = () => {
     handleAIResponse(message);
   };
 
-  const handleAIResponse = (userMessage) => {
+  const handleAIResponse = async (userMessage: string) => {
     // Add user message
     const userMsg = {
       id: messages.length + 1,
@@ -111,48 +115,141 @@ export const AIConsultation = () => {
     };
     
     setMessages(prev => [...prev, userMsg]);
+    conversationHistory.current.push({ role: "user", content: userMessage });
+    setIsProcessing(true);
 
-    // Simulate AI processing and response
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('medical-consultation', {
+        body: {
+          message: userMessage,
+          conversationHistory: conversationHistory.current
+        }
+      });
+
+      if (error) throw error;
+
+      // Create placeholder for AI response
+      const aiMsgId = messages.length + 2;
       let aiResponse = "";
       let severity = "mild";
-      let recommendation = "";
 
-      if (userMessage.toLowerCase().includes("fever") && userMessage.toLowerCase().includes("headache")) {
-        aiResponse = "I understand you have fever and headache for 2 days. This could be a viral infection. Let me ask a few more questions. Do you have body aches? Any throat pain?";
-        severity = "moderate";
-        recommendation = "Monitor symptoms, take paracetamol for fever, drink plenty of fluids";
-      } else if (userMessage.toLowerCase().includes("chest pain")) {
-        aiResponse = "Chest pain can be serious. Is the pain sharp or dull? Does it worsen with breathing? I recommend immediate consultation with a doctor.";
-        severity = "high";
-        recommendation = "Immediate doctor consultation required";
-      } else if (userMessage.toLowerCase().includes("breathing")) {
-        aiResponse = "Difficulty breathing is concerning. How long have you had this? Are you able to speak in full sentences? This requires urgent medical attention.";
-        severity = "high";
-        recommendation = "Emergency medical attention required";
-      } else {
-        aiResponse = "I understand your concern. Can you tell me more about when the symptoms started and their severity from 1-10?";
-        severity = "mild";
-        recommendation = "Continue monitoring symptoms";
+      const streamUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/medical-consultation`;
+      const response = await fetch(streamUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          conversationHistory: conversationHistory.current
+        })
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error("Failed to get AI response");
       }
 
-      const aiMsg = {
-        id: messages.length + 2,
-        type: "ai",
-        content: aiResponse,
-        timestamp: new Date(),
-        severity
-      };
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+      let streamDone = false;
 
-      setMessages(prev => [...prev, aiMsg]);
-      
-      // Update patient info
+      while (!streamDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") {
+            streamDone = true;
+            break;
+          }
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            if (content) {
+              aiResponse += content;
+              
+              // Update or create AI message
+              setMessages(prev => {
+                const lastMsg = prev[prev.length - 1];
+                if (lastMsg?.type === "ai" && lastMsg.id === aiMsgId) {
+                  return prev.map(msg => 
+                    msg.id === aiMsgId 
+                      ? { ...msg, content: aiResponse }
+                      : msg
+                  );
+                }
+                return [...prev, {
+                  id: aiMsgId,
+                  type: "ai",
+                  content: aiResponse,
+                  timestamp: new Date(),
+                  severity
+                }];
+              });
+            }
+          } catch {
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+
+      // Determine severity from response
+      const lowerResponse = aiResponse.toLowerCase();
+      if (lowerResponse.includes("emergency") || lowerResponse.includes("urgent") || lowerResponse.includes("immediately")) {
+        severity = "high";
+      } else if (lowerResponse.includes("doctor") || lowerResponse.includes("clinic") || lowerResponse.includes("consult")) {
+        severity = "moderate";
+      }
+
+      // Update final message with severity
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === aiMsgId 
+            ? { ...msg, severity }
+            : msg
+        )
+      );
+
+      // Extract recommendation
+      let recommendation = "Follow the advice provided";
+      if (severity === "high") {
+        recommendation = "Seek immediate medical attention";
+      } else if (severity === "moderate") {
+        recommendation = "Consult a doctor soon";
+      }
+
       setPatientInfo({
-        symptoms: userMessage.toLowerCase().includes("fever") ? ["fever", "headache"] : [],
+        symptoms: [userMessage.slice(0, 50)],
         severity,
         recommendation
       });
-    }, 2000);
+
+      conversationHistory.current.push({ role: "assistant", content: aiResponse });
+      
+    } catch (error) {
+      console.error("AI consultation error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to get AI response. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -314,12 +411,12 @@ export const AIConsultation = () => {
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleTextInput()}
                   />
-                  <Button onClick={handleTextInput} disabled={!inputMessage.trim()}>
-                    <MessageCircle className="h-4 w-4" />
+                  <Button onClick={handleTextInput} disabled={!inputMessage.trim() || isProcessing}>
+                    {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-4 w-4" />}
                   </Button>
                   <Button
                     onClick={handleVoiceInput}
-                    disabled={!recognition.current}
+                    disabled={!recognition.current || isProcessing}
                     className={isListening ? "bg-emergency animate-pulse" : ""}
                   >
                     {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
