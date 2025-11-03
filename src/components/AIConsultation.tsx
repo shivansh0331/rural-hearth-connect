@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "./VoiceProvider";
 import { supabase } from "@/integrations/supabase/client";
+import ReactMarkdown from "react-markdown";
 
 export const AIConsultation = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -381,9 +382,24 @@ export const AIConsultation = () => {
                           : "bg-muted"
                       }`}
                     >
-                      <div className="whitespace-pre-wrap font-medium leading-relaxed">
-                        {message.content}
-                      </div>
+                      {message.type === "ai" ? (
+                        <div className="prose prose-sm max-w-none leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                              ul: ({ children }) => <ul className="mb-2 ml-4 list-disc space-y-1">{children}</ul>,
+                              li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                              strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                            }}
+                          >
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
+                      ) : (
+                        <div className="font-medium leading-relaxed">
+                          {message.content}
+                        </div>
+                      )}
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs opacity-70">
                           {message.timestamp.toLocaleTimeString()}
