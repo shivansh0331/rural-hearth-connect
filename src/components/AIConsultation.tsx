@@ -381,7 +381,9 @@ export const AIConsultation = () => {
                           : "bg-muted"
                       }`}
                     >
-                      <p>{message.content}</p>
+                      <div className="whitespace-pre-wrap font-medium leading-relaxed">
+                        {message.content}
+                      </div>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs opacity-70">
                           {message.timestamp.toLocaleTimeString()}
