@@ -21,8 +21,11 @@ import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "./VoiceProvider";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/config";
 
 export const AIConsultation = () => {
+  const { t } = useTranslation();
   const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -48,44 +51,36 @@ export const AIConsultation = () => {
   const conversationHistory = useRef<Array<{role: string, content: string}>>([]);
 
   const languages = [
-    { code: "en", name: "English" },
-    { code: "hi", name: "हिंदी (Hindi)" },
-    { code: "bn", name: "বাংলা (Bengali)" },
-    { code: "te", name: "తెలుగు (Telugu)" },
-    { code: "ta", name: "தமிழ் (Tamil)" },
-    { code: "mr", name: "मराठी (Marathi)" },
-    { code: "gu", name: "ગુજરાતી (Gujarati)" }
+    { code: "en", name: "English", speechLang: "en-US" },
+    { code: "hi", name: "हिंदी (Hindi)", speechLang: "hi-IN" },
+    { code: "bn", name: "বাংলা (Bengali)", speechLang: "bn-BD" },
+    { code: "te", name: "తెలుగు (Telugu)", speechLang: "te-IN" },
+    { code: "ta", name: "தமிழ் (Tamil)", speechLang: "ta-IN" },
+    { code: "mr", name: "मराठी (Marathi)", speechLang: "mr-IN" },
+    { code: "gu", name: "ગુજરાતી (Gujarati)", speechLang: "gu-IN" }
   ];
 
   const commonSymptoms = [
-    { name: "Fever", severity: "moderate", icon: <ThermometerSun className="h-4 w-4" /> },
-    { name: "Headache", severity: "mild", icon: <Activity className="h-4 w-4" /> },
-    { name: "Cough", severity: "mild", icon: <Heart className="h-4 w-4" /> },
-    { name: "Chest Pain", severity: "high", icon: <Heart className="h-4 w-4" /> },
-    { name: "Difficulty Breathing", severity: "high", icon: <Activity className="h-4 w-4" /> },
-    { name: "Stomach Pain", severity: "moderate", icon: <Activity className="h-4 w-4" /> },
-    { name: "Dizziness", severity: "moderate", icon: <Activity className="h-4 w-4" /> },
-    { name: "Nausea", severity: "mild", icon: <Activity className="h-4 w-4" /> }
+    { key: "fever", severity: "moderate", icon: <ThermometerSun className="h-4 w-4" /> },
+    { key: "headache", severity: "mild", icon: <Activity className="h-4 w-4" /> },
+    { key: "cough", severity: "mild", icon: <Heart className="h-4 w-4" /> },
+    { key: "chestPain", severity: "high", icon: <Heart className="h-4 w-4" /> },
+    { key: "difficultyBreathing", severity: "high", icon: <Activity className="h-4 w-4" /> },
+    { key: "stomachPain", severity: "moderate", icon: <Activity className="h-4 w-4" /> },
+    { key: "dizziness", severity: "moderate", icon: <Activity className="h-4 w-4" /> },
+    { key: "nausea", severity: "mild", icon: <Activity className="h-4 w-4" /> }
   ];
 
   const handleVoiceInput = () => {
     if (!isListening && recognition.current) {
       setIsListening(true);
-      const langMap: Record<string, string> = {
-        "English": "en-US",
-        "हिंदी (Hindi)": "hi-IN",
-        "বাংলা (Bengali)": "bn-BD",
-        "తెలుగు (Telugu)": "te-IN",
-        "தமிழ் (Tamil)": "ta-IN",
-        "मराठी (Marathi)": "mr-IN",
-        "ગુજરાતી (Gujarati)": "gu-IN"
-      };
-      recognition.current.lang = langMap[currentLanguage] || "en-US";
+      const currentLang = languages.find(l => l.name === currentLanguage);
+      recognition.current.lang = currentLang?.speechLang || "en-US";
       recognition.current.start();
       
       toast({
-        title: "Listening...",
-        description: "Speak clearly about your symptoms",
+        title: t('listeningSpeak'),
+        description: t('typeSymptoms').replace('...', ''),
       });
     } else if (isListening && recognition.current) {
       recognition.current.stop();
@@ -101,7 +96,7 @@ export const AIConsultation = () => {
   };
 
   const handleSymptomClick = (symptom) => {
-    const message = `I am experiencing ${symptom.name.toLowerCase()}`;
+    const message = `I am experiencing ${t(symptom.key).toLowerCase()}`;
     handleAIResponse(message);
   };
 
@@ -262,10 +257,10 @@ export const AIConsultation = () => {
             <div className="p-3 bg-primary text-primary-foreground rounded-full">
               <MessageCircle className="h-8 w-8" />
             </div>
-            <h1 className="text-4xl font-bold text-foreground">AI Voice Consultation</h1>
+            <h1 className="text-4xl font-bold text-foreground">{t('aiConsultation')}</h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Speak with our AI doctor in your preferred language for instant health guidance
+            {t('aiConsultationDesc')}
           </p>
         </div>
 
@@ -277,7 +272,7 @@ export const AIConsultation = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Languages className="h-5 w-5" />
-                  Select Language
+                  {t('selectLanguage')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -287,7 +282,10 @@ export const AIConsultation = () => {
                       key={lang.code}
                       variant={currentLanguage === lang.name ? "default" : "outline"}
                       className="justify-start"
-                      onClick={() => setCurrentLanguage(lang.name)}
+                      onClick={() => {
+                        setCurrentLanguage(lang.name);
+                        i18n.changeLanguage(lang.code);
+                      }}
                     >
                       {lang.name}
                     </Button>
@@ -299,26 +297,26 @@ export const AIConsultation = () => {
             {/* Quick Symptoms */}
             <Card>
               <CardHeader>
-                <CardTitle>Common Symptoms</CardTitle>
-                <CardDescription>Click on a symptom for quick consultation</CardDescription>
+                <CardTitle>{t('commonSymptoms')}</CardTitle>
+                <CardDescription>{t('clickSymptomConsult')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-2">
                   {commonSymptoms.map((symptom) => (
                     <Button
-                      key={symptom.name}
+                      key={symptom.key}
                       variant="outline"
                       className="justify-start"
                       onClick={() => handleSymptomClick(symptom)}
                     >
                       {symptom.icon}
-                      <span className="ml-2">{symptom.name}</span>
+                      <span className="ml-2">{t(symptom.key)}</span>
                       <Badge 
                         variant={symptom.severity === "high" ? "destructive" : 
                                 symptom.severity === "moderate" ? "secondary" : "outline"}
                         className="ml-auto"
                       >
-                        {symptom.severity}
+                        {t(symptom.severity)}
                       </Badge>
                     </Button>
                   ))}
@@ -330,21 +328,21 @@ export const AIConsultation = () => {
             {patientInfo.severity && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-primary">Current Assessment</CardTitle>
+                  <CardTitle className="text-primary">{t('currentAssessment')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <span className="font-medium">Severity Level:</span>
+                    <span className="font-medium">{t('severityLevel')}:</span>
                     <Badge 
                       variant={patientInfo.severity === "high" ? "destructive" : 
                               patientInfo.severity === "moderate" ? "secondary" : "outline"}
                       className="ml-2"
                     >
-                      {patientInfo.severity}
+                      {t(patientInfo.severity)}
                     </Badge>
                   </div>
                   <div>
-                    <span className="font-medium">Recommendation:</span>
+                    <span className="font-medium">{t('recommendation')}:</span>
                     <p className="text-sm text-muted-foreground mt-1">{patientInfo.recommendation}</p>
                   </div>
                 </CardContent>
@@ -357,14 +355,14 @@ export const AIConsultation = () => {
             <Card className="h-[600px] flex flex-col">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>AI Doctor Consultation</span>
+                  <span>{t('aiDoctorConsultation')}</span>
                   <Badge variant="secondary" className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Available 24/7
+                    {t('available247')}
                   </Badge>
                 </CardTitle>
                 <CardDescription>
-                  Currently speaking in: <strong>{currentLanguage}</strong>
+                  {t('currentlySpeaking')}: <strong>{currentLanguage}</strong>
                 </CardDescription>
               </CardHeader>
               
@@ -424,7 +422,7 @@ export const AIConsultation = () => {
               <div className="p-6 border-t">
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Type your symptoms or health concerns..."
+                    placeholder={t('typeSymptoms')}
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleTextInput()}
@@ -441,9 +439,9 @@ export const AIConsultation = () => {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2 text-center">
-                  {isListening ? "Listening... Speak now" : 
-                   !recognition.current ? "Voice recognition not supported" :
-                   "Click microphone to speak or type your message"}
+                  {isListening ? t('listeningSpeak') : 
+                   !recognition.current ? t('voiceNotSupported') :
+                   t('clickMicrophone')}
                 </p>
               </div>
             </Card>
