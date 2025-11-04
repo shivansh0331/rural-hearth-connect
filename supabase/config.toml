@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.medical-consultation]
 verify_jwt = false
+
+[functions.setup-external-db]
+verify_jwt = false
