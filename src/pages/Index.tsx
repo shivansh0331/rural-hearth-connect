@@ -25,6 +25,7 @@ import { HealthWorkerDashboard } from "@/components/HealthWorkerDashboard";
 import { DoctorNetwork } from "@/components/DoctorNetwork";
 import { IVRSimulator } from "@/components/IVRSimulator";
 import { USSDMenu } from "@/components/USSDMenu";
+import { ExternalDBSetup } from "@/components/ExternalDBSetup";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -43,6 +44,8 @@ const Index = () => {
         return <IVRSimulator />;
       case "ussd":
         return <USSDMenu />;
+      case "backup":
+        return <ExternalDBSetup />;
       default:
         return <HomePage />;
     }
@@ -404,6 +407,12 @@ const Index = () => {
                 Doctor Network
               </Button>
               <Button 
+                variant={activeSection === "backup" ? "default" : "ghost"}
+                onClick={() => setActiveSection("backup")}
+              >
+                Database Backup
+              </Button>
+              <Button 
                 variant="default"
                 asChild
               >
@@ -476,6 +485,13 @@ const Index = () => {
                       onClick={() => setActiveSection("doctors")}
                     >
                       Doctor Network
+                    </Button>
+                    <Button 
+                      variant={activeSection === "backup" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection("backup")}
+                    >
+                      Database Backup
                     </Button>
                   </div>
                 </SheetContent>

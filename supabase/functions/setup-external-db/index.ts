@@ -254,44 +254,68 @@ CREATE TRIGGER set_patient_id_trigger
   FOR EACH ROW EXECUTE FUNCTION public.set_patient_id();
 `;
 
-    // Execute the schema using admin API or raw SQL execution
-    // Note: This requires the service role key with admin privileges
-    const response = await fetch(`${externalUrl}/rest/v1/rpc/exec_sql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${externalKey}`,
-        'apikey': externalKey
-      },
-      body: JSON.stringify({ query: schemaSQL })
-    })
-
-    if (!response.ok) {
-      // If RPC method doesn't exist, try direct SQL execution via PostgREST
-      console.log('Attempting direct SQL execution...')
-      
-      // Split and execute SQL statements individually
-      const statements = schemaSQL.split(';').filter(s => s.trim())
-      
-      for (const statement of statements) {
-        if (statement.trim()) {
-          console.log('Executing:', statement.substring(0, 100) + '...')
+    // Execute each SQL statement directly using the Supabase client
+    console.log('Creating schema in external database...')
+    
+    // Split SQL into individual statements
+    const statements = schemaSQL
+      .split(';')
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+    
+    let successCount = 0
+    let errorCount = 0
+    const errors = []
+    
+    for (const statement of statements) {
+      try {
+        console.log('Executing statement:', statement.substring(0, 100) + '...')
+        
+        // Execute using the SQL editor via REST API
+        const { error } = await externalSupabase.rpc('exec', { 
+          sql: statement + ';' 
+        }).single()
+        
+        if (error) {
+          // Try alternative method - direct query
+          const response = await fetch(`${externalUrl}/rest/v1/rpc/query`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${externalKey}`,
+              'apikey': externalKey,
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({ query: statement + ';' })
+          })
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
         }
+        
+        successCount++
+      } catch (error) {
+        console.error('Error executing statement:', error.message)
+        errorCount++
+        errors.push({ statement: statement.substring(0, 100), error: error.message })
+        // Continue with other statements even if one fails
       }
-      
-      console.log('Schema created successfully! Please run the SQL manually in your Supabase SQL Editor.')
-      
+    }
+    
+    console.log(`Schema setup completed: ${successCount} successful, ${errorCount} failed`)
+    
+    if (errorCount > 0) {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'Schema SQL generated. Please execute the following SQL in your external Supabase SQL Editor:',
-          sql: schemaSQL
+          message: `Schema partially created: ${successCount} statements succeeded, ${errorCount} failed. You may need to run some SQL manually.`,
+          sql: schemaSQL,
+          errors: errors
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
-
-    console.log('Schema setup completed successfully!')
 
     return new Response(
       JSON.stringify({ 

@@ -8,23 +8,29 @@ import { Textarea } from '@/components/ui/textarea';
 
 export const ExternalDBSetup = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [sqlScript, setSqlScript] = useState('');
   const [copied, setCopied] = useState(false);
+  const [setupComplete, setSetupComplete] = useState(false);
 
   const setupExternalDatabase = async () => {
     setIsLoading(true);
     try {
+      toast.info('Creating schema in external database...');
       const { data, error } = await supabase.functions.invoke('setup-external-db');
       
       if (error) throw error;
 
       if (data.sql) {
         setSqlScript(data.sql);
-        toast.success('SQL Script Generated', {
+        toast.warning('Manual SQL Execution Required', {
           description: 'Copy the SQL script below and run it in your external Supabase SQL Editor'
         });
       } else {
-        toast.success(data.message);
+        toast.success('Schema Created!', {
+          description: data.message
+        });
+        setSetupComplete(true);
       }
     } catch (error: any) {
       toast.error('Setup Failed', {
@@ -32,6 +38,26 @@ export const ExternalDBSetup = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const syncExistingData = async () => {
+    setIsSyncing(true);
+    try {
+      toast.info('Syncing existing data to external database...');
+      const { data, error } = await supabase.functions.invoke('initial-sync');
+      
+      if (error) throw error;
+
+      toast.success('Data Synced!', {
+        description: data.message
+      });
+    } catch (error: any) {
+      toast.error('Sync Failed', {
+        description: error.message
+      });
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -53,28 +79,65 @@ export const ExternalDBSetup = () => {
           Create the same table structure in your external Supabase project
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">
-            Click the button below to generate the SQL schema. Then copy and run it in your external Supabase SQL Editor.
-          </p>
-          <Button 
-            onClick={setupExternalDatabase} 
-            disabled={isLoading}
-            size="lg"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Schema...
-              </>
-            ) : (
-              <>
-                <Database className="mr-2 h-4 w-4" />
-                Generate SQL Schema
-              </>
-            )}
-          </Button>
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Step 1: Create Schema</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Create the database structure in your external Supabase project.
+            </p>
+            <Button 
+              onClick={setupExternalDatabase} 
+              disabled={isLoading || setupComplete}
+              size="lg"
+              className="w-full"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Schema...
+                </>
+              ) : setupComplete ? (
+                <>
+                  <Check className="mr-2 h-4 w-4" />
+                  Schema Created
+                </>
+              ) : (
+                <>
+                  <Database className="mr-2 h-4 w-4" />
+                  Create External Database Schema
+                </>
+              )}
+            </Button>
+          </div>
+
+          {setupComplete && (
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Step 2: Sync Existing Data</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Copy all existing data from this database to the external backup.
+              </p>
+              <Button 
+                onClick={syncExistingData} 
+                disabled={isSyncing}
+                size="lg"
+                variant="secondary"
+                className="w-full"
+              >
+                {isSyncing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Syncing Data...
+                  </>
+                ) : (
+                  <>
+                    <Database className="mr-2 h-4 w-4" />
+                    Sync All Existing Data
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </div>
 
         {sqlScript && (
