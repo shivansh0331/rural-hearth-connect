@@ -63,18 +63,25 @@ const HospitalDashboard = () => {
 
   const handleUpdateBeds = async () => {
     try {
+      const bedCount = parseInt(bedsAvailable);
+      
       const { error } = await supabase
         .from("hospitals")
-        .update({ beds_available: parseInt(bedsAvailable) })
+        .update({ beds_available: bedCount })
         .eq("user_id", user?.id);
 
       if (error) throw error;
+
+      // Update local state immediately
+      setHospitalData(prev => ({
+        ...prev,
+        beds_available: bedCount
+      }));
 
       toast({
         title: "Updated successfully",
         description: "Bed availability updated",
       });
-      fetchHospitalData();
     } catch (error: any) {
       toast({
         title: "Error",
