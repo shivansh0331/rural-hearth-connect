@@ -111,7 +111,13 @@ export const IVRSimulator = () => {
   const greetings = {
     "English": "Welcome to Village Health Whisperer. Your health is our priority. Please listen carefully to the menu options.",
     "हिंदी (Hindi)": "गांव स्वास्थ्य व्हिस्परर में आपका स्वागत है। आपका स्वास्थ्य हमारी प्राथमिकता है। कृपया मेनू विकल्पों को ध्यान से सुनें।",
-    "বাংলা (Bengali)": "গ্রাম স্বাস্থ্য হুইসপারারে আপনাকে স্বাগতম। আপনার স্বাস্থ্য আমাদের অগ্রাধিকার। অনুগ্রহ করে মেনু অপশনগুলো মনোযোগ দিয়ে শুনুন।"
+    "বাংলা (Bengali)": "গ্রাম স্বাস্থ্য হুইসপারারে আপনাকে স্वাগতম। আপনার স্वাস্থ্য আমাদের অগ্রাধিকার। অনুগ্রহ করে মেনু অপশনগুলো মনোযোগ দিয়ে শুনুন।"
+  };
+
+  const menuInstructions = {
+    "English": "Please choose from the following options: ",
+    "हिंदी (Hindi)": "कृपया निम्नलिखित विकल्पों में से चुनें: ",
+    "বাংলা (Bengali)": "অনুগ্রহ করে নিম্নলিখিত বিকল্পগুলির মধ্যে থেকে বেছে নিন: "
   };
 
   const startCall = async () => {
@@ -150,7 +156,8 @@ export const IVRSimulator = () => {
   const playCurrentMenu = async () => {
     if (currentMenu.length === 0) return;
     
-    let menuText = "Please choose from the following options: ";
+    const instruction = menuInstructions[currentLanguage as keyof typeof menuInstructions] || menuInstructions["English"];
+    let menuText = instruction;
     
     for (const option of currentMenu) {
       menuText += `${option.speech}. `;
@@ -194,40 +201,65 @@ export const IVRSimulator = () => {
 
   const handleAction = async (action: string, optionText: string) => {
     let responseText = "";
+    const isHindi = currentLanguage === "हिंदी (Hindi)";
     
     switch (action) {
       case "emergency":
-        responseText = currentLanguage === "हिंदी (Hindi)" ? 
-          "आपातकालीन सेवा सक्रिय की गई। निकटतम अस्पताल और एम्बुलेंस को सूचित किया गया है। कृपया शांत रहें।" :
+        responseText = isHindi ? 
+          "आपातकालीन सेवा सक्रिय की गई। निकटतम अस्पताल और एम्बुलेंस को सूचित किया गया है। कृपया शांत रहें और प्राथमिक चिकित्सा निर्देशों का पालन करें।" :
           "Emergency services activated. Nearest hospital and ambulance have been notified. Please remain calm and follow first aid instructions.";
         break;
       case "ai-doctor":
-        responseText = "Connecting you to our AI doctor for consultation. Please describe your symptoms clearly.";
+        responseText = isHindi ?
+          "आपको हमारे एआई डॉक्टर से जोड़ा जा रहा है। कृपया अपने लक्षणों का स्पष्ट वर्णन करें।" :
+          "Connecting you to our AI doctor for consultation. Please describe your symptoms clearly.";
         break;
       case "find-hospital-general":
-        responseText = "The nearest general hospital is Apollo Hospital, 15 kilometers away. Phone: +91-11-26925858";
+        responseText = isHindi ?
+          "निकटतम सामान्य अस्पताल अपोलो अस्पताल है, 15 किलोमीटर दूर। फोन: +91-11-26925858" :
+          "The nearest general hospital is Apollo Hospital, 15 kilometers away. Phone: +91-11-26925858";
         break;
       case "find-hospital-maternity":
-        responseText = "The nearest maternity hospital is Fortis Women's Hospital, 12 kilometers away. Phone: +91-124-4962200";
+        responseText = isHindi ?
+          "निकटतम प्रसूति अस्पताल फोर्टिस महिला अस्पताल है, 12 किलोमीटर दूर। फोन: +91-124-4962200" :
+          "The nearest maternity hospital is Fortis Women's Hospital, 12 kilometers away. Phone: +91-124-4962200";
+        break;
+      case "find-hospital-pediatric":
+        responseText = isHindi ?
+          "निकटतम बाल चिकित्सा अस्पताल रेनबो चिल्ड्रन अस्पताल है, 10 किलोमीटर दूर। फोन: +91-11-49474747" :
+          "The nearest pediatric hospital is Rainbow Children's Hospital, 10 kilometers away. Phone: +91-11-49474747";
         break;
       case "vaccination-info":
-        responseText = "Next vaccination drive is scheduled for next week. Vaccines available: Polio, Measles, Hepatitis B. Contact your ASHA worker.";
+        responseText = isHindi ?
+          "अगले सप्ताह टीकाकरण अभियान निर्धारित है। उपलब्ध टीके: पोलियो, खसरा, हेपेटाइटिस बी। अपने आशा कार्यकर्ता से संपर्क करें।" :
+          "Next vaccination drive is scheduled for next week. Vaccines available: Polio, Measles, Hepatitis B. Contact your ASHA worker.";
         break;
       case "hygiene-tips":
-        responseText = "Wash hands frequently with soap, drink boiled water, keep surroundings clean, cover food properly.";
+        responseText = isHindi ?
+          "साबुन से बार-बार हाथ धोएं, उबला हुआ पानी पिएं, आसपास सफाई रखें, भोजन को ढककर रखें।" :
+          "Wash hands frequently with soap, drink boiled water, keep surroundings clean, cover food properly.";
+        break;
+      case "health-alerts":
+        responseText = isHindi ?
+          "वर्तमान में आपके क्षेत्र में डेंगू और मलेरिया का खतरा है। मच्छरों से सुरक्षा के लिए उपाय करें।" :
+          "Current health alert in your area: Dengue and Malaria risk. Take precautions against mosquitoes.";
         break;
       case "connect-asha":
-        responseText = "Connecting you to your local ASHA worker. Please hold while we establish the connection.";
+        responseText = isHindi ?
+          "आपको आपके स्थानीय आशा कार्यकर्ता से जोड़ा जा रहा है। कृपया प्रतीक्षा करें।" :
+          "Connecting you to your local ASHA worker. Please hold while we establish the connection.";
         break;
       default:
-        responseText = "Service activated. Thank you for using Village Health Whisperer.";
+        responseText = isHindi ?
+          "सेवा सक्रिय की गई। गांव स्वास्थ्य व्हिस्परर का उपयोग करने के लिए धन्यवाद।" :
+          "Service activated. Thank you for using Village Health Whisperer.";
     }
 
     setCurrentInstruction(responseText);
     await speakText(responseText);
     
     toast({
-      title: "Service Activated",
+      title: isHindi ? "सेवा सक्रिय" : "Service Activated",
       description: optionText,
     });
 

@@ -27,11 +27,20 @@ import i18n from "@/i18n/config";
 export const AIConsultation = () => {
   const { t } = useTranslation();
   const [isRecording, setIsRecording] = useState(false);
+  const getInitialMessage = (lang: string) => {
+    const messages = {
+      "en": "Namaste! I am your AI Medical Assistant. How can I help you today? You can speak in Hindi, English, or your local language to describe your symptoms.",
+      "hi": "नमस्ते! मैं आपका एआई चिकित्सा सहायक हूं। आज मैं आपकी कैसे मदद कर सकता हूं? आप अपने लक्षणों का वर्णन करने के लिए हिंदी, अंग्रेजी या अपनी स्थानीय भाषा में बोल सकते हैं।",
+      "bn": "নমস্কার! আমি আপনার এআই চিকিৎসা সহায়ক। আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি? আপনি আপনার লক্ষণ বর্ণনা করতে হিন্দি, ইংরেজি বা আপনার স্থানীয় ভাষায় কথা বলতে পারেন।"
+    };
+    return messages[lang as keyof typeof messages] || messages["en"];
+  };
+
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: "ai",
-      content: "Namaste! I am your AI Medical Assistant. How can I help you today? You can speak in Hindi, English, or your local language to describe your symptoms.",
+      content: getInitialMessage("en"),
       timestamp: new Date(),
       severity: null
     }
@@ -111,18 +120,19 @@ export const AIConsultation = () => {
     };
     
     setMessages(prev => [...prev, userMsg]);
-    conversationHistory.current.push({ role: "user", content: userMessage });
+    
+    // Add language context to the message if not English
+    const languagePrefix = currentLanguage !== "English" 
+      ? `[User is speaking in ${currentLanguage}. Please respond in ${currentLanguage}] `
+      : "";
+    
+    conversationHistory.current.push({ 
+      role: "user", 
+      content: languagePrefix + userMessage 
+    });
     setIsProcessing(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('medical-consultation', {
-        body: {
-          message: userMessage,
-          conversationHistory: conversationHistory.current
-        }
-      });
-
-      if (error) throw error;
 
       // Create placeholder for AI response
       const aiMsgId = messages.length + 2;
