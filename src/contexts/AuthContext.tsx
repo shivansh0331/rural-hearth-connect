@@ -105,19 +105,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      if (error) return { error };
+      if (error) {
+        console.error("Signup error:", error);
+        return { error };
+      }
       
       if (data.user) {
-        // Insert user role
-        await supabase.from("user_roles").insert({
+        // Insert user role first - this is critical
+        const { error: roleError } = await supabase.from("user_roles").insert({
           user_id: data.user.id,
           role: role
         });
 
+        if (roleError) {
+          console.error("Role insertion error:", roleError);
+          return { error: roleError };
+        }
+
         // Insert role-specific profile
+        let profileError = null;
         switch (role) {
           case "patient":
-            await supabase.from("patients").insert({
+            const { error: patientError } = await supabase.from("patients").insert({
               user_id: data.user.id,
               name: additionalData.name,
               age: additionalData.age,
@@ -125,18 +134,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               phone: additionalData.phone,
               village: additionalData.village
             });
+            profileError = patientError;
             break;
           case "doctor":
-            await supabase.from("doctors").insert({
+            const { error: doctorError } = await supabase.from("doctors").insert({
               user_id: data.user.id,
               name: additionalData.name,
               specialization: additionalData.specialization,
               phone: additionalData.phone,
               hospital: additionalData.hospital
             });
+            profileError = doctorError;
             break;
           case "hospital":
-            await supabase.from("hospitals").insert({
+            const { error: hospitalError } = await supabase.from("hospitals").insert({
               user_id: data.user.id,
               name: additionalData.name,
               address: additionalData.address,
@@ -146,29 +157,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               beds_available: additionalData.beds_available || 0,
               ambulance_available: additionalData.ambulance_available || false
             });
+            profileError = hospitalError;
             break;
           case "asha_worker":
-            await supabase.from("health_workers").insert({
+            const { error: ashaError } = await supabase.from("health_workers").insert({
               user_id: data.user.id,
               name: additionalData.name,
               phone: additionalData.phone,
               village: additionalData.village,
               role: "ASHA"
             });
+            profileError = ashaError;
             break;
           case "relative":
-            await supabase.from("relatives").insert({
+            const { error: relativeError } = await supabase.from("relatives").insert({
               user_id: data.user.id,
               name: additionalData.name,
               phone: additionalData.phone,
               relation_to_patient: additionalData.relation_to_patient
             });
+            profileError = relativeError;
             break;
+        }
+
+        if (profileError) {
+          console.error("Profile insertion error:", profileError);
+          return { error: profileError };
         }
       }
 
       return { error: null };
     } catch (error: any) {
+      console.error("Signup catch error:", error);
       return { error };
     }
   };
