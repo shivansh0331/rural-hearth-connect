@@ -16,7 +16,13 @@ import {
   CheckCircle,
   AlertCircle,
   Calendar,
-  Activity
+  Activity,
+  Award,
+  Video,
+  ClipboardCheck,
+  Star,
+  Clock,
+  PlayCircle
 } from "lucide-react";
 
 export const HealthWorkerDashboard = () => {
@@ -66,32 +72,71 @@ export const HealthWorkerDashboard = () => {
       title: "Basic Health Assessment",
       progress: 100,
       duration: "45 min",
-      status: "completed"
+      status: "completed",
+      lessons: 8,
+      completedLessons: 8,
+      hasQuiz: true,
+      quizScore: 92,
+      certificate: true
     },
     {
       title: "Maternal Health Care",
       progress: 75,
       duration: "60 min",
-      status: "in-progress"
+      status: "in-progress",
+      lessons: 12,
+      completedLessons: 9,
+      hasQuiz: true,
+      quizScore: null,
+      certificate: false
     },
     {
       title: "Child Vaccination Schedule",
       progress: 100,
       duration: "30 min",
-      status: "completed"
+      status: "completed",
+      lessons: 6,
+      completedLessons: 6,
+      hasQuiz: true,
+      quizScore: 88,
+      certificate: true
     },
     {
       title: "Emergency First Aid",
       progress: 40,
       duration: "90 min",
-      status: "in-progress"
+      status: "in-progress",
+      lessons: 15,
+      completedLessons: 6,
+      hasQuiz: true,
+      quizScore: null,
+      certificate: false
     },
     {
       title: "Digital Health Records",
       progress: 0,
       duration: "35 min",
-      status: "not-started"
+      status: "not-started",
+      lessons: 5,
+      completedLessons: 0,
+      hasQuiz: true,
+      quizScore: null,
+      certificate: false
     }
+  ];
+
+  const skillAssessments = [
+    { skill: "Patient Communication", level: 85, badge: "Expert" },
+    { skill: "Health Monitoring", level: 72, badge: "Proficient" },
+    { skill: "Emergency Response", level: 60, badge: "Intermediate" },
+    { skill: "Digital Tools", level: 45, badge: "Beginner" },
+    { skill: "Community Outreach", level: 90, badge: "Expert" }
+  ];
+
+  const upcomingWebinars = [
+    { title: "Monsoon Disease Prevention", date: "Dec 10, 2025", time: "10:00 AM", speaker: "Dr. Priya Sharma" },
+    { title: "Mental Health First Aid", date: "Dec 15, 2025", time: "2:00 PM", speaker: "Dr. Rakesh Gupta" },
+    { title: "Nutrition for Rural Communities", date: "Dec 20, 2025", time: "11:00 AM", speaker: "Dr. Anita Desai" }
   ];
 
   const healthAlerts = [
@@ -293,77 +338,252 @@ export const HealthWorkerDashboard = () => {
 
           {/* Training Modules */}
           <TabsContent value="training">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5" />
-                  Training & Skill Development
-                </CardTitle>
-                <CardDescription>
-                  Complete training modules to enhance your healthcare skills
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {trainingModules.map((module, index) => (
-                    <Card key={index} className="border border-border">
-                      <CardContent className="pt-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="font-semibold mb-1">{module.title}</h3>
-                            <p className="text-sm text-muted-foreground">Duration: {module.duration}</p>
-                          </div>
-                          <Badge 
-                            variant={
-                              module.status === "completed" ? "secondary" :
-                              module.status === "in-progress" ? "default" : "outline"
-                            }
-                          >
-                            {module.status === "completed" ? "Completed" :
-                             module.status === "in-progress" ? "In Progress" : "Not Started"}
-                          </Badge>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">Progress</span>
-                            <span className="text-sm font-medium">{module.progress}%</span>
-                          </div>
-                          <div className="w-full bg-muted rounded-full h-2">
-                            <div 
-                              className="bg-primary h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${module.progress}%` }}
-                            />
+            <div className="space-y-6">
+              {/* Overview Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="bg-primary/5 border-primary/20">
+                  <CardContent className="pt-4 text-center">
+                    <Award className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <div className="text-2xl font-bold text-primary">2</div>
+                    <p className="text-xs text-muted-foreground">Certificates Earned</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-success/5 border-success/20">
+                  <CardContent className="pt-4 text-center">
+                    <CheckCircle className="h-8 w-8 mx-auto mb-2 text-success" />
+                    <div className="text-2xl font-bold text-success">29</div>
+                    <p className="text-xs text-muted-foreground">Lessons Completed</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-warning/5 border-warning/20">
+                  <CardContent className="pt-4 text-center">
+                    <Clock className="h-8 w-8 mx-auto mb-2 text-warning" />
+                    <div className="text-2xl font-bold text-warning">4.5h</div>
+                    <p className="text-xs text-muted-foreground">Learning Time</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-secondary/5 border-secondary/20">
+                  <CardContent className="pt-4 text-center">
+                    <Star className="h-8 w-8 mx-auto mb-2 text-secondary" />
+                    <div className="text-2xl font-bold text-secondary">90%</div>
+                    <p className="text-xs text-muted-foreground">Avg Quiz Score</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Training Modules */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5" />
+                    Training Modules
+                  </CardTitle>
+                  <CardDescription>
+                    Complete training modules to enhance your healthcare skills
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {trainingModules.map((module, index) => (
+                      <Card key={index} className="border border-border hover:shadow-md transition-shadow">
+                        <CardContent className="pt-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <h3 className="font-semibold mb-1">{module.title}</h3>
+                              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {module.duration}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Video className="h-3 w-3" />
+                                  {module.completedLessons}/{module.lessons} lessons
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              <Badge 
+                                variant={
+                                  module.status === "completed" ? "secondary" :
+                                  module.status === "in-progress" ? "default" : "outline"
+                                }
+                              >
+                                {module.status === "completed" ? "Completed" :
+                                 module.status === "in-progress" ? "In Progress" : "Not Started"}
+                              </Badge>
+                              {module.certificate && (
+                                <span className="text-xs text-success flex items-center gap-1">
+                                  <Award className="h-3 w-3" />
+                                  Certified
+                                </span>
+                              )}
+                            </div>
                           </div>
                           
-                          <Button 
-                            variant={module.status === "completed" ? "outline" : "default"}
-                            className="w-full mt-4"
-                          >
-                            {module.status === "completed" ? (
-                              <>
-                                <CheckCircle className="h-4 w-4 mr-2" />
-                                Review Module
-                              </>
-                            ) : module.status === "in-progress" ? (
-                              <>
-                                <TrendingUp className="h-4 w-4 mr-2" />
-                                Continue Learning
-                              </>
-                            ) : (
-                              <>
-                                <BookOpen className="h-4 w-4 mr-2" />
-                                Start Module
-                              </>
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm">Progress</span>
+                              <span className="text-sm font-medium">{module.progress}%</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div 
+                                className="bg-primary h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${module.progress}%` }}
+                              />
+                            </div>
+                            
+                            {module.quizScore !== null && (
+                              <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                                <span className="text-sm flex items-center gap-1">
+                                  <ClipboardCheck className="h-4 w-4" />
+                                  Quiz Score
+                                </span>
+                                <Badge variant={module.quizScore >= 80 ? "default" : "secondary"}>
+                                  {module.quizScore}%
+                                </Badge>
+                              </div>
                             )}
+                            
+                            <div className="flex gap-2 mt-4">
+                              <Button 
+                                variant={module.status === "completed" ? "outline" : "default"}
+                                className="flex-1"
+                              >
+                                {module.status === "completed" ? (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Review
+                                  </>
+                                ) : module.status === "in-progress" ? (
+                                  <>
+                                    <PlayCircle className="h-4 w-4 mr-2" />
+                                    Continue
+                                  </>
+                                ) : (
+                                  <>
+                                    <BookOpen className="h-4 w-4 mr-2" />
+                                    Start
+                                  </>
+                                )}
+                              </Button>
+                              {module.hasQuiz && module.progress === 100 && module.quizScore === null && (
+                                <Button variant="secondary">
+                                  <ClipboardCheck className="h-4 w-4 mr-2" />
+                                  Take Quiz
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Skill Assessment & Webinars */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Skill Assessment */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="h-5 w-5" />
+                      Skill Assessment
+                    </CardTitle>
+                    <CardDescription>Your proficiency levels across different areas</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {skillAssessments.map((skill, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">{skill.skill}</span>
+                          <Badge 
+                            variant={
+                              skill.badge === "Expert" ? "default" :
+                              skill.badge === "Proficient" ? "secondary" : "outline"
+                            }
+                          >
+                            {skill.badge}
+                          </Badge>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              skill.level >= 80 ? "bg-success" :
+                              skill.level >= 60 ? "bg-primary" :
+                              skill.level >= 40 ? "bg-warning" : "bg-muted-foreground"
+                            }`}
+                            style={{ width: `${skill.level}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    <Button variant="outline" className="w-full mt-4">
+                      Take Skill Assessment Test
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Upcoming Webinars */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Video className="h-5 w-5" />
+                      Upcoming Webinars
+                    </CardTitle>
+                    <CardDescription>Live training sessions from experts</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {upcomingWebinars.map((webinar, index) => (
+                      <div key={index} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                        <h4 className="font-semibold mb-1">{webinar.title}</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Speaker: {webinar.speaker}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {webinar.date} at {webinar.time}
+                          </span>
+                          <Button size="sm" variant="outline">
+                            Register
                           </Button>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Certificates */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Your Certificates
+                  </CardTitle>
+                  <CardDescription>Download and share your achievements</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {trainingModules.filter(m => m.certificate).map((module, index) => (
+                      <Card key={index} className="bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20">
+                        <CardContent className="pt-6 text-center">
+                          <Award className="h-12 w-12 mx-auto mb-3 text-primary" />
+                          <h4 className="font-semibold mb-1">{module.title}</h4>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Quiz Score: {module.quizScore}%
+                          </p>
+                          <Button size="sm" variant="outline" className="w-full">
+                            Download Certificate
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Health Alerts */}
