@@ -280,6 +280,11 @@ export const AIConsultation = () => {
 
       conversationHistory.current.push({ role: "assistant", content: aiResponse });
       
+      // Auto-speak the AI response
+      if (aiResponse.trim()) {
+        speakText(aiResponse);
+      }
+      
     } catch (error) {
       console.error("AI consultation error:", error);
       toast({
