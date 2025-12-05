@@ -59,6 +59,40 @@ export const AIConsultation = () => {
   const recognition = useRef<SpeechRecognition | null>(null);
   const conversationHistory = useRef<Array<{role: string, content: string}>>([]);
 
+  // Initialize speech recognition
+  useEffect(() => {
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognitionAPI) {
+      recognition.current = new SpeechRecognitionAPI();
+      recognition.current.continuous = false;
+      recognition.current.interimResults = false;
+      
+      recognition.current.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = event.results[0][0].transcript;
+        setInputMessage(transcript);
+        setIsListening(false);
+        // Automatically send the voice input
+        if (transcript.trim()) {
+          handleAIResponse(transcript);
+        }
+      };
+
+      recognition.current.onerror = (event) => {
+        console.error('Speech recognition error:', event);
+        setIsListening(false);
+        toast({
+          title: "Voice Error",
+          description: "Could not recognize speech. Please try again.",
+          variant: "destructive"
+        });
+      };
+
+      recognition.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
+
   const languages = [
     { code: "en", name: "English", speechLang: "en-US" },
     { code: "hi", name: "हिंदी (Hindi)", speechLang: "hi-IN" },
