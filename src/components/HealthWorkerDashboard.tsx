@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { VideoLessonPlayer } from "@/components/VideoLessonPlayer";
 import { 
   Users, 
   Plus, 
@@ -24,6 +25,28 @@ import {
   Clock,
   PlayCircle
 } from "lucide-react";
+
+interface Lesson {
+  id: string;
+  title: string;
+  duration: string;
+  videoUrl: string;
+  description: string;
+  completed: boolean;
+  progress: number;
+}
+
+interface TrainingModule {
+  title: string;
+  progress: number;
+  duration: string;
+  status: string;
+  lessons: Lesson[];
+  completedLessons: number;
+  hasQuiz: boolean;
+  quizScore: number | null;
+  certificate: boolean;
+}
 
 export const HealthWorkerDashboard = () => {
   const [patients, setPatients] = useState([
@@ -67,13 +90,22 @@ export const HealthWorkerDashboard = () => {
     condition: ""
   });
 
-  const trainingModules = [
+  const [trainingModules, setTrainingModules] = useState<TrainingModule[]>([
     {
       title: "Basic Health Assessment",
       progress: 100,
       duration: "45 min",
       status: "completed",
-      lessons: 8,
+      lessons: [
+        { id: "bha-1", title: "Introduction to Health Assessment", duration: "5 min", videoUrl: "", description: "Learn the basics of patient health assessment", completed: true, progress: 100 },
+        { id: "bha-2", title: "Vital Signs Measurement", duration: "8 min", videoUrl: "", description: "How to measure blood pressure, pulse, and temperature", completed: true, progress: 100 },
+        { id: "bha-3", title: "Patient Interview Techniques", duration: "6 min", videoUrl: "", description: "Effective communication with patients", completed: true, progress: 100 },
+        { id: "bha-4", title: "Physical Examination Basics", duration: "7 min", videoUrl: "", description: "Basic physical examination procedures", completed: true, progress: 100 },
+        { id: "bha-5", title: "Symptom Recognition", duration: "5 min", videoUrl: "", description: "Identifying common symptoms", completed: true, progress: 100 },
+        { id: "bha-6", title: "Documentation & Records", duration: "4 min", videoUrl: "", description: "Recording patient information accurately", completed: true, progress: 100 },
+        { id: "bha-7", title: "Referral Guidelines", duration: "5 min", videoUrl: "", description: "When and how to refer patients", completed: true, progress: 100 },
+        { id: "bha-8", title: "Assessment Summary", duration: "5 min", videoUrl: "", description: "Putting it all together", completed: true, progress: 100 }
+      ],
       completedLessons: 8,
       hasQuiz: true,
       quizScore: 92,
@@ -84,7 +116,20 @@ export const HealthWorkerDashboard = () => {
       progress: 75,
       duration: "60 min",
       status: "in-progress",
-      lessons: 12,
+      lessons: [
+        { id: "mhc-1", title: "Pregnancy Overview", duration: "5 min", videoUrl: "", description: "Understanding pregnancy stages", completed: true, progress: 100 },
+        { id: "mhc-2", title: "Antenatal Care", duration: "6 min", videoUrl: "", description: "Prenatal checkups and monitoring", completed: true, progress: 100 },
+        { id: "mhc-3", title: "Nutrition During Pregnancy", duration: "5 min", videoUrl: "", description: "Essential nutrients for mother and baby", completed: true, progress: 100 },
+        { id: "mhc-4", title: "High-Risk Pregnancy", duration: "7 min", videoUrl: "", description: "Identifying and managing high-risk cases", completed: true, progress: 100 },
+        { id: "mhc-5", title: "Labor and Delivery Signs", duration: "5 min", videoUrl: "", description: "Recognizing signs of labor", completed: true, progress: 100 },
+        { id: "mhc-6", title: "Safe Delivery Practices", duration: "6 min", videoUrl: "", description: "Ensuring safe childbirth", completed: true, progress: 100 },
+        { id: "mhc-7", title: "Postnatal Care", duration: "5 min", videoUrl: "", description: "Care after delivery", completed: true, progress: 100 },
+        { id: "mhc-8", title: "Breastfeeding Support", duration: "5 min", videoUrl: "", description: "Helping mothers with breastfeeding", completed: true, progress: 100 },
+        { id: "mhc-9", title: "Newborn Care Basics", duration: "5 min", videoUrl: "", description: "Essential newborn care", completed: true, progress: 100 },
+        { id: "mhc-10", title: "Family Planning", duration: "4 min", videoUrl: "", description: "Contraception options and counseling", completed: false, progress: 40 },
+        { id: "mhc-11", title: "Maternal Mental Health", duration: "4 min", videoUrl: "", description: "Addressing postpartum depression", completed: false, progress: 0 },
+        { id: "mhc-12", title: "Emergency Obstetric Care", duration: "3 min", videoUrl: "", description: "Handling pregnancy emergencies", completed: false, progress: 0 }
+      ],
       completedLessons: 9,
       hasQuiz: true,
       quizScore: null,
@@ -95,7 +140,14 @@ export const HealthWorkerDashboard = () => {
       progress: 100,
       duration: "30 min",
       status: "completed",
-      lessons: 6,
+      lessons: [
+        { id: "cvs-1", title: "Immunization Importance", duration: "5 min", videoUrl: "", description: "Why vaccines matter", completed: true, progress: 100 },
+        { id: "cvs-2", title: "National Immunization Schedule", duration: "6 min", videoUrl: "", description: "Understanding the vaccine schedule", completed: true, progress: 100 },
+        { id: "cvs-3", title: "Vaccine Storage & Handling", duration: "5 min", videoUrl: "", description: "Cold chain management", completed: true, progress: 100 },
+        { id: "cvs-4", title: "Administration Techniques", duration: "5 min", videoUrl: "", description: "Safe injection practices", completed: true, progress: 100 },
+        { id: "cvs-5", title: "AEFI Management", duration: "5 min", videoUrl: "", description: "Handling adverse reactions", completed: true, progress: 100 },
+        { id: "cvs-6", title: "Record Keeping", duration: "4 min", videoUrl: "", description: "Vaccination documentation", completed: true, progress: 100 }
+      ],
       completedLessons: 6,
       hasQuiz: true,
       quizScore: 88,
@@ -106,7 +158,23 @@ export const HealthWorkerDashboard = () => {
       progress: 40,
       duration: "90 min",
       status: "in-progress",
-      lessons: 15,
+      lessons: [
+        { id: "efa-1", title: "First Aid Principles", duration: "5 min", videoUrl: "", description: "Basic first aid concepts", completed: true, progress: 100 },
+        { id: "efa-2", title: "CPR Basics", duration: "8 min", videoUrl: "", description: "Cardiopulmonary resuscitation", completed: true, progress: 100 },
+        { id: "efa-3", title: "Choking Response", duration: "5 min", videoUrl: "", description: "Helping choking victims", completed: true, progress: 100 },
+        { id: "efa-4", title: "Bleeding Control", duration: "6 min", videoUrl: "", description: "Managing wounds and bleeding", completed: true, progress: 100 },
+        { id: "efa-5", title: "Fracture Management", duration: "6 min", videoUrl: "", description: "Handling bone injuries", completed: true, progress: 100 },
+        { id: "efa-6", title: "Burns Treatment", duration: "5 min", videoUrl: "", description: "First aid for burns", completed: true, progress: 100 },
+        { id: "efa-7", title: "Snake Bite Response", duration: "7 min", videoUrl: "", description: "Managing snake bites in rural areas", completed: false, progress: 30 },
+        { id: "efa-8", title: "Drowning Response", duration: "6 min", videoUrl: "", description: "Water emergency management", completed: false, progress: 0 },
+        { id: "efa-9", title: "Heat Stroke", duration: "5 min", videoUrl: "", description: "Managing heat-related illness", completed: false, progress: 0 },
+        { id: "efa-10", title: "Poisoning Response", duration: "6 min", videoUrl: "", description: "First aid for poisoning", completed: false, progress: 0 },
+        { id: "efa-11", title: "Seizure Management", duration: "5 min", videoUrl: "", description: "Helping during seizures", completed: false, progress: 0 },
+        { id: "efa-12", title: "Allergic Reactions", duration: "5 min", videoUrl: "", description: "Managing anaphylaxis", completed: false, progress: 0 },
+        { id: "efa-13", title: "Shock Recognition", duration: "5 min", videoUrl: "", description: "Identifying and treating shock", completed: false, progress: 0 },
+        { id: "efa-14", title: "Emergency Transport", duration: "6 min", videoUrl: "", description: "Safe patient transport", completed: false, progress: 0 },
+        { id: "efa-15", title: "First Aid Kit", duration: "5 min", videoUrl: "", description: "Essential supplies and usage", completed: false, progress: 0 }
+      ],
       completedLessons: 6,
       hasQuiz: true,
       quizScore: null,
@@ -117,13 +185,22 @@ export const HealthWorkerDashboard = () => {
       progress: 0,
       duration: "35 min",
       status: "not-started",
-      lessons: 5,
+      lessons: [
+        { id: "dhr-1", title: "Introduction to EHR", duration: "5 min", videoUrl: "", description: "Understanding electronic health records", completed: false, progress: 0 },
+        { id: "dhr-2", title: "Data Entry Basics", duration: "7 min", videoUrl: "", description: "Accurate data recording", completed: false, progress: 0 },
+        { id: "dhr-3", title: "Mobile App Usage", duration: "8 min", videoUrl: "", description: "Using health apps on mobile", completed: false, progress: 0 },
+        { id: "dhr-4", title: "Data Privacy", duration: "7 min", videoUrl: "", description: "Protecting patient information", completed: false, progress: 0 },
+        { id: "dhr-5", title: "Offline Data Sync", duration: "8 min", videoUrl: "", description: "Working without internet", completed: false, progress: 0 }
+      ],
       completedLessons: 0,
       hasQuiz: true,
       quizScore: null,
       certificate: false
     }
-  ];
+  ]);
+
+  const [selectedModule, setSelectedModule] = useState<TrainingModule | null>(null);
+  const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
 
   const skillAssessments = [
     { skill: "Patient Communication", level: 85, badge: "Expert" },
@@ -138,6 +215,30 @@ export const HealthWorkerDashboard = () => {
     { title: "Mental Health First Aid", date: "Dec 15, 2025", time: "2:00 PM", speaker: "Dr. Rakesh Gupta" },
     { title: "Nutrition for Rural Communities", date: "Dec 20, 2025", time: "11:00 AM", speaker: "Dr. Anita Desai" }
   ];
+
+  const handleOpenVideoPlayer = (module: TrainingModule) => {
+    setSelectedModule(module);
+    setIsVideoPlayerOpen(true);
+  };
+
+  const handleLessonComplete = (lessonId: string) => {
+    setTrainingModules(prev => prev.map(module => ({
+      ...module,
+      lessons: module.lessons.map(lesson => 
+        lesson.id === lessonId ? { ...lesson, completed: true, progress: 100 } : lesson
+      ),
+      completedLessons: module.lessons.filter(l => l.id === lessonId ? true : l.completed).length
+    })));
+  };
+
+  const handleProgressUpdate = (lessonId: string, progress: number) => {
+    setTrainingModules(prev => prev.map(module => ({
+      ...module,
+      lessons: module.lessons.map(lesson => 
+        lesson.id === lessonId ? { ...lesson, progress } : lesson
+      )
+    })));
+  };
 
   const healthAlerts = [
     {
@@ -397,7 +498,7 @@ export const HealthWorkerDashboard = () => {
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Video className="h-3 w-3" />
-                                  {module.completedLessons}/{module.lessons} lessons
+                                  {module.completedLessons}/{module.lessons.length} lessons
                                 </span>
                               </div>
                             </div>
@@ -448,6 +549,7 @@ export const HealthWorkerDashboard = () => {
                               <Button 
                                 variant={module.status === "completed" ? "outline" : "default"}
                                 className="flex-1"
+                                onClick={() => handleOpenVideoPlayer(module)}
                               >
                                 {module.status === "completed" ? (
                                   <>
@@ -687,6 +789,15 @@ export const HealthWorkerDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Video Lesson Player */}
+      <VideoLessonPlayer
+        isOpen={isVideoPlayerOpen}
+        onClose={() => setIsVideoPlayerOpen(false)}
+        module={selectedModule}
+        onLessonComplete={handleLessonComplete}
+        onProgressUpdate={handleProgressUpdate}
+      />
     </div>
   );
 };
